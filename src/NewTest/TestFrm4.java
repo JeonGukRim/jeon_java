@@ -21,18 +21,38 @@ public class TestFrm4 extends JFrame {
 	private static boolean expand = true;
 
 	public TestFrm4() {
+		
+		//조회 버튼
 		enqubt = new JButton("조회");
 		enqubt.setBackground(Color.CYAN);
+		enqubt.setSize(this.getWidth(),this.getWidth()/5);
+		enqubt.setLocation(0,);
+		
+		//입고 버튼
 		inbt = new JButton("입고");
 		inbt.setBackground(Color.CYAN);
+		inbt.setSize(this.getWidth(),this.getWidth()/5);
+		inbt.setLocation(10,30);
+		//출고 버튼
 		outbt = new JButton("출고");
 		outbt.setBackground(Color.CYAN);
-		outbt.addActionListener(new ActionHandler());
+		outbt.setSize(50,10);
+		outbt.setLocation(10,50);
+		//리스트 버튼
 		listbt = new JButton("상품리스트");
 		listbt.setBackground(Color.CYAN);
+		listbt.setSize(50,10);
+		listbt.setLocation(10,70);
+		//설정 버튼
 		setbt = new JButton("설정");
 		setbt.setBackground(Color.CYAN);
+		setbt.setSize(50,10);
+		setbt.setLocation(10,80);
+		
 		pNorth = new JPanel();
+		
+		//서브 메뉴 버튼 생성
+		
 		subMenuContainer = new JPanel();
 		subMenuContainer.setLayout(new GridLayout(25, 1));
 		for (int i = 0; i < 2; i++) {
@@ -40,16 +60,20 @@ public class TestFrm4 extends JFrame {
 			subBtn[i].setBackground(Color.WHITE);
 		}
 		
-		pNorth.setLayout(new GridLayout(5, 1));
+		
+		
+		//메뉴버튼 클릭
+		outbt.addActionListener(new ActionHandler());
+		
+		
+		pNorth.setLayout(null);
+//		pNorth.setLayout(new GridLayout(5, 1));
 		pNorth.add(enqubt);
 		pNorth.add(inbt);
 		pNorth.add(outbt);
 		pNorth.add(listbt);
 		pNorth.add(setbt);
-//		pNorth.setLocation(10,10);
-//		pNorth.setSize(300,400);
 		
-//		this.setLayout(null);
 		this.add(new JScrollPane(pNorth));
 		this.setVisible(true);
 		this.setSize(500, 600);
