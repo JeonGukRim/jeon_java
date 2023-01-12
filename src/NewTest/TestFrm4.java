@@ -120,6 +120,7 @@ public class TestFrm4 extends JFrame {
 //					pNorth.add(listbt);
 //					pNorth.add(setbt);
 					pNorth.repaint();
+					pNorth1.repaint();
 //					pCenter.repaint();
 //					pSouth.repaint();
 					validate();
