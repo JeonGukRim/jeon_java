@@ -1,4 +1,4 @@
-package NewTest;
+package MyProject;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

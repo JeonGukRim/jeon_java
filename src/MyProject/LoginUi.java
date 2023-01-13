@@ -1,4 +1,4 @@
-package NewTest;
+package MyProject;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -32,56 +32,54 @@ public class LoginUi extends JFrame {
 //		ck = new JCheckBox("",image2);
 //		ck.setSelectedIcon(image3);
 		ck = new JCheckBox("관리자 모드");
-		ck.setSize(300,80);
+		ck.setSize(300, 80);
 		ck.setLocation(800, 350);
 		ck.setSelected(true);
-		
-		//로그인 정보
-		idjl.setLocation(800,390);
-		idjl.setSize(200,200);
+
+		// 로그인 정보
+		idjl.setLocation(800, 390);
+		idjl.setSize(200, 200);
 		idjl.setFont(new Font("Arial", Font.ITALIC, 30));
-		loginTf.setSize(200,40);
+		loginTf.setSize(400, 40);
 		loginTf.setBackground(Color.ORANGE);
-		loginTf.setLocation(880,471);
-		pwjl.setLocation(800,450);
-		pwjl.setSize(200,200);
+		loginTf.setLocation(880, 471);
+		pwjl.setLocation(800, 450);
+		pwjl.setSize(200, 200);
 		pwjl.setFont(new Font("Arial", Font.ITALIC, 30));
-		pwTf.setSize(200,40);
+		pwTf.setSize(400, 40);
 		pwTf.setBackground(Color.ORANGE);
-		pwTf.setLocation(880,533);
-		
-		login.setSize(200,30);
-		login.setLocation(840,620);
-		
-		
+		pwTf.setLocation(880, 533);
+
+		login.setSize(200, 30);
+		login.setLocation(840, 620);
+
 		panel.add(ck);
-		panel.add(idjl); 
+		panel.add(idjl);
 		panel.add(pwjl);
 		panel.add(loginTf);
 		panel.add(pwTf);
 		panel.add(login);
-		
+
 		setTitle("W.M.S 로그인");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setContentPane(panel);
-	
+
 		setLayout(null);
 		setBackground(Color.white);
-	
+
 		setSize(1500, 900);
 		setVisible(true);
 
-//		mode = new ModeBtn(this);
 	}
 
 	class MyPanel extends JPanel {
 		private ImageIcon icon = new ImageIcon("images/warehouse.png");
 		private Image img = icon.getImage();
-		
-		MyPanel(){
-//			setLayout(null);
+
+		MyPanel() {
 		}
+
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			// 이미지
