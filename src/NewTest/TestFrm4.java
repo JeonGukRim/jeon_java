@@ -84,65 +84,76 @@ public class TestFrm4 extends JFrame {
 }
 	
 	
-	private class ActionHandler implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-		
-			if (menuBtn[0] == e.getSource()) {
-				if (expand) {// 펼침
-					int n =3;
-					for(int i = 1 ; i < 5 ; i++) {
-						for(int j = 0; j< 3 ; j++) {
-							subBt1[j] = new JButton(subTx1[j]);
-							subBt1[j].setLocation(15,(int)((pNorth.getHeight()/5)*(j+1)));
-							subBt1[j].setSize((pNorth.getWidth()-50),(int)(pNorth.getHeight()/5));
-							pNorth.add(subBt1[j]);
-						}
-						menuBtn[i].setLocation(0,(int)((pNorth.getHeight()/5)*n));
-						n++;
-					}
-//					pNorth.setLayout(new GridLayout(3, 1));
-//					pNorth.remove(menuBtn[3]);
-//					pNorth.remove(menuBtn[4]);
+//	private class ActionHandler implements ActionListener {
 //
-//					pSouth.add(menuBtn[3]);
-//					pSouth.add(menuBtn[4]);
-//					pSouth.setLayout(new GridLayout(2, 1));
-//					getContentPane().add(pSouth, "South");
-					validate();
-//					getContentPane().repaint();
-					expand = false;
-				} else {// 접힘
-//					for (int i = 0; i < btn.length; i++) {
-//						subMenuContainer.remove(btn[i]);
+//		@Override
+//		public void actionPerformed(ActionEvent e) {
+//		
+//			if (menuBtn[0] == e.getSource()) {
+//				if (expand) {// 펼침
+////					int n =3;
+////					for(int i = 1 ; i < 5 ; i++) {
+////						for(int j = 0; j< 3 ; j++) {
+////							subBt1[j] = new JButton(subTx1[j]);
+////							subBt1[j].setLocation(15,(int)((pNorth.getHeight()/5)*(j+1)));
+////							subBt1[j].setSize((pNorth.getWidth()-50),(int)(pNorth.getHeight()/5));
+////							pNorth.add(subBt1[j]);
+////						}
+////						menuBtn[i].setLocation(0,(int)((pNorth.getHeight()/5)*n));
+////						n++;
+//					}
+////					pNorth.setLayout(new GridLayout(3, 1));
+////					pNorth.remove(menuBtn[3]);
+////					pNorth.remove(menuBtn[4]);
+////
+////					pSouth.add(menuBtn[3]);
+////					pSouth.add(menuBtn[4]);
+////					pSouth.setLayout(new GridLayout(2, 1));
+////					getContentPane().add(pSouth, "South");
+//					validate();
+////					getContentPane().repaint();
+//					expand = false;
+//				} else {// 접힘
+////					for (int i = 0; i < btn.length; i++) {
+////						subMenuContainer.remove(btn[i]);
+////					}
+//<<<<<<< HEAD
+////					pSouth.removeAll();
+////					pNorth.setLayout(new GridLayout(5, 1));
+////					pNorth.add(menuBtn[3]);
+////					pNorth.add(menuBtn[4]);
+////					pNorth.repaint();
+//=======
+//					for (int i = 0; i < subBtn.length; i++) {
+//						pNorth.remove(subBtn[i]);
 //					}
 //					pSouth.removeAll();
 //					pNorth.setLayout(new GridLayout(5, 1));
-//					pNorth.add(menuBtn[3]);
-//					pNorth.add(menuBtn[4]);
+////					pNorth.add(listbt);
+////					pNorth.add(setbt);
 //					pNorth.repaint();
-//					pCenter.repaint();
-//					pSouth.repaint();
-//					validate();
-					getContentPane().repaint();
-					pNorth.removeAll();
-//					for(int i = 0 ; i < 5 ; i++) {
-//						pNorth.add(menuBtn[i]);
-//					}
+//>>>>>>> refs/remotes/origin/master
+////					pCenter.repaint();
+////					pSouth.repaint();
+////					validate();
+//					getContentPane().repaint();
+//					pNorth.removeAll();
+////					for(int i = 0 ; i < 5 ; i++) {
+////						pNorth.add(menuBtn[i]);
+////					}
+////					
+//					setTing();
+//					expand = true;
 //					
-					setTing();
-					expand = true;
-					
-				}
-			}
-		}
-
-	}
-
-	public static void main(String[] args) {
-
-		new TestFrm4();
-	}
+//				}
+//			}
+//		}
+//
+//	}
+//
+//	public static void main(String[] args) {
+//
+//		new TestFrm4();
+//	}
 
 }
