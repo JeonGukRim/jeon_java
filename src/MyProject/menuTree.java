@@ -90,7 +90,7 @@ public class menuTree extends JFrame {
 		c.add(subMenuContainer);
 		setVisible(true);
 		setSize(1500, 900);
-		subBtn[0].addActionListener(null);subBtn[1].addActionListener(null);
+		subBtn[0].addActionListener(null);
 	}
 
 	private class ActionHandler implements ActionListener {
