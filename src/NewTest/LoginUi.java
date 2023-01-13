@@ -86,9 +86,9 @@ public class LoginUi extends JFrame {
 			super.paintComponent(g);
 			// 이미지
 			g.drawImage(img, 200, 250, 450, 450, this);
+			// 명언
 			g.setColor(new Color(132, 203, 52));
 			g.setFont(new Font("Arial", Font.ITALIC, 50));
-			// 명언
 			g.drawString("Being happy never goes out of style", 100, 80);
 			g.setColor(Color.BLACK);
 			g.setFont(new Font("휴먼매직체", Font.ITALIC, 30));
