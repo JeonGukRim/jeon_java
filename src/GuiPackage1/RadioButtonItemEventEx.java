@@ -20,7 +20,8 @@ public class RadioButtonItemEventEx extends JFrame {
 	private ImageIcon [] image = {new ImageIcon("images/apple.PNG"),
 			new ImageIcon("images/pear.jpg"),new ImageIcon("images/cherry.jpg")};
 	private JLabel imageLabel = new JLabel();
-	
+//	private ImageIcon image2 = new ImageIcon("images/33.png");
+//	private ImageIcon image3 = new ImageIcon("images/33-1.png");
 	public RadioButtonItemEventEx () {
 	setTitle("레디오 버튼 아이템 이벤트 예제");
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,6 +36,9 @@ public class RadioButtonItemEventEx extends JFrame {
 		radioPanel.add(radio[i]);
 		radio[i].addItemListener(new MyItemListener());
 	}
+//	radio[0].setIcon(image2);
+//	radio[0].setSelectedIcon(image3);
+	
 	radio[2].setSelected(true);
 	c.add(radioPanel,BorderLayout.NORTH);
 	c.add(imageLabel,BorderLayout.CENTER);

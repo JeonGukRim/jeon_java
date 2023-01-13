@@ -8,31 +8,27 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-public class Tessss extends JFrame {
+public class ModeBtn extends JFrame {
 
-	public Tessss() {
+	public ModeBtn(Container f) {
 		JButton btn1 = new JButton("관리자");
 		JButton btn2 = new JButton("직원");
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container c = getContentPane();
-		c.setLayout(null);
-		btn1.setSize(100, 20);
-		btn2.setSize(100, 20);
-		btn1.setLocation(10, 10);
-		btn2.setLocation(70, 10);
-
+		c = f ;
+		btn1.setSize(200, 40);
+		btn2.setSize(200, 40);
+		btn1.setLocation(800, 370);
+		btn2.setLocation(870, 370);
 		c.add(btn1);
 		c.add(btn2);
-		setSize(300, 300);
-		setVisible(true);
 
 		btn1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				btn1.setEnabled(false);
-				btn1.setBackground(Color.BLUE);
+				btn1.setBackground(Color.ORANGE);
 				btn1.setForeground(Color.WHITE);
 				btn2.setEnabled(true);
 				btn2.setBackground(null);
@@ -45,7 +41,7 @@ public class Tessss extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				btn2.setEnabled(false);
-				btn2.setBackground(Color.BLUE);
+				btn2.setBackground(Color.ORANGE);
 				btn2.setForeground(Color.WHITE);
 				btn1.setEnabled(true);
 				btn1.setBackground(null);
@@ -56,6 +52,6 @@ public class Tessss extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new Tessss();
+//		new Tessss();
 	}
 }
