@@ -19,7 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class SubBtnListener extends JFrame  {
+public class SubBtnListener extends JFrame {
 	private JPanel jp = new JPanel();
 	private Connection conn;
 	private Statement stmt = null;
@@ -33,7 +33,7 @@ public class SubBtnListener extends JFrame  {
 	private JTable table = null;
 	// 테이블과 내용 담는 객체
 	private DefaultTableModel model = null;
-	
+
 	// 조회 메뉴하 재고현황조회,입출고이력,메모 수정 레이블 과 버튼
 	private JLabel searchJl1 = new JLabel("SKU코드");
 	private JLabel searchJl2 = new JLabel("제품명");
@@ -43,13 +43,12 @@ public class SubBtnListener extends JFrame  {
 	private JPanel searchPanel = new JPanel();
 	private JButton memoupBtn = new JButton("수정");
 	private JTextField memoupTf = new JTextField(20);
-	
-	
-	
+
 	private Vector result;
 
 //	{ "재고현황조회", "검색", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "재고이동", "상품정보조회",
 //	"ID정보관리" };
+//	SubBtnListener(){}
 	public SubBtnListener(JPanel jp, String text) {
 		this.jp = jp;
 		this.text = text;
@@ -65,7 +64,7 @@ public class SubBtnListener extends JFrame  {
 			title.add("재고위치");
 			title.add("수량");
 			title.add("메모");
-			
+
 			if (text.equals("재고현황조회")) {
 				jp.removeAll();
 //				result = allData();
@@ -105,7 +104,6 @@ public class SubBtnListener extends JFrame  {
 
 	}
 
-	
 	// 데이터 받아 넣기
 	public void re() {
 		result = allData();
@@ -161,7 +159,8 @@ public class SubBtnListener extends JFrame  {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+//		SubBtnListener tf = new SubBtnListener();
+//		tf.DbClass();
 	}
 
 }

@@ -88,24 +88,15 @@ public class menuTree extends JFrame {
 		subMenuContainer = new JPanel();
 		subMenuContainer.setSize(900, 500);
 		subMenuContainer.setLocation(350, 200);
-<<<<<<< HEAD
-//		subMenuContainer.setBackground(new Color(50, 220, 71));
-=======
 		subMenuContainer.setBackground(new Color(50, 220, 71));
->>>>>>> refs/remotes/origin/master
 
 		c.add(menuL);
 		c.add(new textPanel());
 //		c.add(subMenuContainer);
 		setVisible(true);
 		setSize(1500, 900);
-<<<<<<< HEAD
-
-		// 서브 버튼에 조회기능 추가
-=======
 		subBtn[0].addActionListener(null);
 		subBtn[0].addActionListener(null);
->>>>>>> refs/remotes/origin/master
 	}
 
 	private class ActionHandler implements ActionListener {
@@ -115,8 +106,6 @@ public class menuTree extends JFrame {
 				if (subBtn[i] == e.getSource()) {
 					if (i == 0) {
 						new SubBtnListener(subMenuContainer, "재고현황조회");
-//						tf.add(subMenuContainer, "재고현황조회");
-//						subMenuContainer.repaint();
 						getContentPane().add(subMenuContainer);
 
 					} else if (i == 1) {
