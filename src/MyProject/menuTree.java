@@ -27,6 +27,7 @@ public class menuTree extends JFrame {
 	private static boolean expand2 = false;
 	private static boolean expand3 = false;
 	private static boolean expand4 = false;
+	// 서브버튼 리스너 선언
 
 	public menuTree() {
 		for (int i = 0; i < subBtn.length; i++) {
@@ -77,27 +78,66 @@ public class menuTree extends JFrame {
 		for (int i = 0; i < menuBtn.length; i++) {
 			pNorth.add(menuBtn[i]);
 			menuBtn[i].addActionListener(new ActionHandler());
+			if (i == 4) {
+				for (int j = 0; j < subBtn.length; j++)
+					subBtn[j].addActionListener(new ActionHandler());
+			}
 		}
 		menuL.add(pNorth, "North");
-		
+
 		subMenuContainer = new JPanel();
-		subMenuContainer.setSize(900,500);
-		subMenuContainer.setLocation(350,200);
-		subMenuContainer.setBackground(new Color(50,220,71));
-	
+		subMenuContainer.setSize(900, 500);
+		subMenuContainer.setLocation(350, 200);
+//		subMenuContainer.setBackground(new Color(50, 220, 71));
+
 		c.add(menuL);
 		c.add(new textPanel());
-		c.add(subMenuContainer);
+//		c.add(subMenuContainer);
 		setVisible(true);
 		setSize(1500, 900);
-		subBtn[0].addActionListener(null);
+
+		// 서브 버튼에 조회기능 추가
 	}
 
 	private class ActionHandler implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			for (int i = 0; i < subBtn.length; i++) {
+				if (subBtn[i] == e.getSource()) {
+					if (i == 0) {
+						new SubBtnListener(subMenuContainer, "재고현황조회");
+//						tf.add(subMenuContainer, "재고현황조회");
+//						subMenuContainer.repaint();
+						getContentPane().add(subMenuContainer);
+
+					} else if (i == 1) {
+						new SubBtnListener(subMenuContainer, "검색");
+						getContentPane().add(subMenuContainer);
+					}
+
+					else if (i == 2) {
+						new SubBtnListener(subMenuContainer, "검색");
+					} else if (i == 3) {
+						new SubBtnListener(subMenuContainer, "입출고 이력조회");
+					} else if (i == 4) {
+						new SubBtnListener(subMenuContainer, "발주서 생성");
+					} else if (i == 5) {
+						new SubBtnListener(subMenuContainer, "Location정보");
+					} else if (i == 6) {
+						new SubBtnListener(subMenuContainer, "출고오더생성");
+					} else if (i == 7) {
+						new SubBtnListener(subMenuContainer, "재고이동");
+					} else if (i == 8) {
+						new SubBtnListener(subMenuContainer, "상품정보조회");
+					} else {
+						new SubBtnListener(subMenuContainer, "ID정보관리");
+					}
+				}
+				validate();
+			}
+
 			if (menuBtn[0] == e.getSource()) {
+
 				expand1 = false;
 				expand2 = false;
 				expand3 = false;
@@ -107,6 +147,7 @@ public class menuTree extends JFrame {
 				wind4();
 				wind5();
 				wind1();
+
 			} else if (menuBtn[1] == e.getSource()) {
 				expand = false;
 				expand2 = false;
@@ -167,6 +208,7 @@ public class menuTree extends JFrame {
 			}
 			validate();
 			menuL.repaint();
+
 			expand = false;
 		} else {// 접힘
 			for (int i = 0; i < 3; i++) {
@@ -174,6 +216,7 @@ public class menuTree extends JFrame {
 			}
 			validate();
 			menuL.repaint();
+
 			expand = true;
 		}
 	}
@@ -270,10 +313,11 @@ public class menuTree extends JFrame {
 }
 
 class textPanel extends JPanel {
-	textPanel(){
-		setSize(900,100);
-		setLocation(380,5);
+	textPanel() {
+		setSize(900, 100);
+		setLocation(380, 5);
 	}
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setColor(new Color(132, 203, 52));
