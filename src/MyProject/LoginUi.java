@@ -6,6 +6,11 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -28,7 +33,12 @@ public class LoginUi extends JFrame {
 	private ButtonGroup g = new ButtonGroup();
 	private ImageIcon image2 = new ImageIcon("images/check.png");
 	private ImageIcon image3 = new ImageIcon("images/check1.png");
-	private ProjectDialog dialog ;
+	private ProjectDialog dialog;
+
+	private Connection conn;
+	private Statement stmt = null;
+	private ResultSet rs = null;
+	
 	public LoginUi() {
 		// 관리자 모드 여부 체크박스
 //		ck = new JCheckBox("",image2);
@@ -55,8 +65,9 @@ public class LoginUi extends JFrame {
 
 		login.setSize(200, 30);
 		login.setLocation(840, 620);
-	
-		dialog = new ProjectDialog(this,"로그인 성공");
+
+		dialog = new ProjectDialog(this, "로그인 성공");
+		dbclass();
 		login.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -65,7 +76,7 @@ public class LoginUi extends JFrame {
 				dialog.setVisible(true);
 			}
 		});
-		
+
 		panel.add(ck);
 		panel.add(idjl);
 		panel.add(pwjl);
@@ -82,10 +93,6 @@ public class LoginUi extends JFrame {
 		setBackground(Color.white);
 		setSize(1500, 900);
 		setVisible(true);
-		
-		
-	
-		
 
 	}
 
@@ -122,4 +129,15 @@ public class LoginUi extends JFrame {
 		new LoginUi();
 	}
 
+	public void dbclass() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver"); // MySQL 드라이버 로드
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/myproject", "root", "test123"); // JDBC 연결
+			stmt = conn.createStatement(); // SQL문 처리용 Statement 객체 생성
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 로드 오류");
+		} catch (SQLException e1) {
+			System.out.println("실행오류");
+		}
+	}
 }

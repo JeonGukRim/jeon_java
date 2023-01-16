@@ -76,6 +76,7 @@ public class DBManager {
 			System.out.println("3.author (선택 => o,다른 문자 입력시 -> x");
 			String autox = sin.nextLine();
 			String query = "";
+		
 			if (tox.equalsIgnoreCase("o")) {
 				System.out.println("title를 입력하세요");
 				String title = sin.nextLine();
