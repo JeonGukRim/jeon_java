@@ -94,18 +94,18 @@ public class SubBtnListener extends JFrame  {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
-
-//						result = allData();
 						re();
 						model.setDataVector(result, title);
 					}
 				});
 				result = null;
+//				result = null;
 			}
 		}
 
 	}
 
+	
 	// 데이터 받아 넣기
 	public void re() {
 		result = allData();
