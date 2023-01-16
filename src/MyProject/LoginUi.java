@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -26,13 +28,14 @@ public class LoginUi extends JFrame {
 	private ButtonGroup g = new ButtonGroup();
 	private ImageIcon image2 = new ImageIcon("images/check.png");
 	private ImageIcon image3 = new ImageIcon("images/check1.png");
-
+	private ProjectDialog dialog ;
 	public LoginUi() {
 		// 관리자 모드 여부 체크박스
 //		ck = new JCheckBox("",image2);
 //		ck.setSelectedIcon(image3);
 		ck = new JCheckBox("관리자 모드");
 		ck.setSize(300, 80);
+		ck.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		ck.setLocation(800, 350);
 		ck.setSelected(true);
 
@@ -52,7 +55,17 @@ public class LoginUi extends JFrame {
 
 		login.setSize(200, 30);
 		login.setLocation(840, 620);
-
+	
+		dialog = new ProjectDialog(this,"로그인 성공");
+		login.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				setVisible(false);
+				dialog.setVisible(true);
+			}
+		});
+		
 		panel.add(ck);
 		panel.add(idjl);
 		panel.add(pwjl);
@@ -67,9 +80,12 @@ public class LoginUi extends JFrame {
 
 		setLayout(null);
 		setBackground(Color.white);
-
 		setSize(1500, 900);
 		setVisible(true);
+		
+		
+	
+		
 
 	}
 
@@ -104,7 +120,6 @@ public class LoginUi extends JFrame {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new LoginUi();
-
 	}
 
 }

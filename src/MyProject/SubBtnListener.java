@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -33,7 +34,8 @@ public class SubBtnListener extends JFrame {
 	private JTable table = null;
 	// 테이블과 내용 담는 객체
 	private DefaultTableModel model = null;
-
+	private Vector result;
+	
 	// 조회 메뉴하 재고현황조회,입출고이력,메모 수정 레이블 과 버튼
 	private JLabel searchJl1 = new JLabel("SKU코드");
 	private JLabel searchJl2 = new JLabel("제품명");
@@ -41,10 +43,24 @@ public class SubBtnListener extends JFrame {
 	private JTextField searchTf2 = new JTextField(20);
 	private JButton searchBtn = new JButton("검색");
 	private JPanel searchPanel = new JPanel();
-	private JButton memoupBtn = new JButton("수정");
+	private JLabel skuJl = new JLabel("SKU코드 :");
+	private JTextField skuCode = new JTextField(20);
+	private JLabel memoupJl = new JLabel("메모 수정");
+	private JButton memoupBtn = new JButton("저장");
 	private JTextField memoupTf = new JTextField(20);
+	private JPanel upPanel = new JPanel();
+	private PreparedStatement pstmtUpdate = null;
+	
+	//입출고 내역 필요 객체 선언;
+	
+	
+	
+	
+	
+	
+	
 
-	private Vector result;
+
 
 //	{ "재고현황조회", "검색", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "재고이동", "상품정보조회",
 //	"ID정보관리" };
@@ -64,15 +80,31 @@ public class SubBtnListener extends JFrame {
 			title.add("재고위치");
 			title.add("수량");
 			title.add("메모");
-
+			upPanel.add(skuJl);
+			upPanel.add(skuCode);
+			upPanel.add(memoupJl);
+			upPanel.add(memoupTf);
+			upPanel.add(memoupBtn);
+//			jp.add(upPanel, BorderLayout.SOUTH);
+			// 조회된 내역에서 메모 내역 수정 버튼
+			memoupBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String code = skuCode.getText();
+					String memo = memoupTf.getText();
+					update(code, memo);
+					re(); //데이터 값 가져오기
+					model.setDataVector(result, title);
+				}
+			});
 			if (text.equals("재고현황조회")) {
 				jp.removeAll();
-//				result = allData();
-				re();
+				re(); //데이터 값 가져오기
 				model.setDataVector(result, title);
 				table = new JTable(model);
 				JScrollPane sp = new JScrollPane(table);
 				jp.add(sp, BorderLayout.CENTER);
+				jp.add(upPanel, BorderLayout.SOUTH);
 				result = null;
 			} else if (text.equals("검색")) {
 				jp.removeAll();
@@ -88,7 +120,7 @@ public class SubBtnListener extends JFrame {
 				searchPanel.add(searchBtn);
 				jp.add(searchPanel, BorderLayout.NORTH);
 				jp.add(sp, BorderLayout.CENTER);
-//				jp.add();
+				jp.add(upPanel, BorderLayout.SOUTH);
 				searchBtn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -98,8 +130,9 @@ public class SubBtnListener extends JFrame {
 					}
 				});
 				result = null;
-//				result = null;
 			}
+		}else if(text.equals( "입출고 이력조회")) {
+			
 		}
 
 	}
@@ -107,6 +140,18 @@ public class SubBtnListener extends JFrame {
 	// 데이터 받아 넣기
 	public void re() {
 		result = allData();
+	}
+
+	private void update(String code, String memo) {
+		try {
+			pstmtUpdate = conn.prepareStatement("update listdb set memo = ? where sku_code = ?");
+			pstmtUpdate.setString(1, memo);
+			pstmtUpdate.setString(2, code);
+			pstmtUpdate.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	// 데이터 베이서 연결
