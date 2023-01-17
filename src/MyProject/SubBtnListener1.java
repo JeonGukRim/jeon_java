@@ -73,13 +73,13 @@ public class SubBtnListener1 extends JFrame {
 					// TODO Auto-generated method stub
 					try {
 						rs = stmt.executeQuery("select * from productlist where sku_code ='" + codeTf.getText() + "';");
-						if(rs.next()) {
-						while (rs.next()) {
-							skuNamedata.setText(rs.getString("sku_name"));
-							kinddata.setText(rs.getString("sku_kind"));
-						}
-						}else {
-							JOptionPane.showMessageDialog(null,"존재하지 않는 코드 입니다\n코드를 새로 생성후 진행하세요!","입력오류",1);
+						if (rs.next()) {
+							while (rs.next()) {
+								skuNamedata.setText(rs.getString("sku_name"));
+								kinddata.setText(rs.getString("sku_kind"));
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "존재하지 않는 코드 입니다\n코드를 새로 생성후 진행하세요!", "입력오류", 1);
 						}
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
@@ -91,10 +91,10 @@ public class SubBtnListener1 extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					
+
 				}
 			});
-			
+
 //			model.setDataVector(result, title);
 //			table = new JTable(model);
 //			JScrollPane sp = new JScrollPane(table);
