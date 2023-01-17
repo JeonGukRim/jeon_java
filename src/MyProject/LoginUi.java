@@ -68,14 +68,25 @@ public class LoginUi extends JFrame {
 
 		dialog = new ProjectDialog(this, "로그인 성공");
 		dbclass();
-		login.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				setVisible(false);
-				dialog.setVisible(true);
-			}
-		});
+		
+		
+//		login.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// TODO Auto-generated method stub
+//				try {
+//					rs = stmt.executeQuery("select * from masterid");
+//					if(loginTf.getText().equals(rs.getString("id"))&&pwTf.getText().equals(rs.getString("pw"))) {
+//						setVisible(false);
+//						dialog.setVisible(true);
+//						}
+//				} catch (SQLException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//				
+//			}
+//		});
 
 		panel.add(ck);
 		panel.add(idjl);
@@ -100,8 +111,8 @@ public class LoginUi extends JFrame {
 		private ImageIcon icon = new ImageIcon("images/warehouse.png");
 		private Image img = icon.getImage();
 
-		MyPanel() {
-		}
+//		MyPanel() {
+//		}
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
@@ -131,9 +142,9 @@ public class LoginUi extends JFrame {
 
 	public void dbclass() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver"); // MySQL 드라이버 로드
+			Class.forName("com.mysql.jdbc.Driver"); 
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/myproject", "root", "test123"); // JDBC 연결
-			stmt = conn.createStatement(); // SQL문 처리용 Statement 객체 생성
+			stmt = conn.createStatement(); 
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 로드 오류");
 		} catch (SQLException e1) {

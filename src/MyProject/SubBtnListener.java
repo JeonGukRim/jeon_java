@@ -121,6 +121,7 @@ public class SubBtnListener extends JFrame {
 				jp.add(searchPanel, BorderLayout.NORTH);
 				jp.add(sp, BorderLayout.CENTER);
 				jp.add(upPanel, BorderLayout.SOUTH);
+				
 				searchBtn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
