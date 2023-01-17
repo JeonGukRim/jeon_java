@@ -7,13 +7,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -56,15 +55,17 @@ public class SubBtnListener1 extends JFrame {
 	private JLabel innum = new JLabel("입고예정수량:");
 	private JTextField inTf = new JTextField(20);
 	private JButton creatBtn = new JButton("생성");
-	private JButton upBtn = new JButton("수정");
-	private Boolean exp;
-	
-	
+	private JButton upBtn = new JButton("새로고침");
+	private Boolean exp = true;
+	private PreparedStatement pstmtInsert = null;
+	private String formatedNow = null;
+
 	public SubBtnListener1(JPanel mainP, String text) {
 		this.mainP = mainP;
 		this.text = text;
 		mainP.setLayout(new BorderLayout());
-
+		LocalDateTime now = LocalDateTime.now();
+		formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 		if (text.equals("발주서 생성")) {
 			mainP.removeAll();
 			DbClass();
@@ -76,7 +77,7 @@ public class SubBtnListener1 extends JFrame {
 					JTextField t = (JTextField) e.getSource();
 					try {
 						rs = stmt.executeQuery("select * from productlist where sku_code ='" + t.getText() + "';");
-						if (rs.isBeforeFirst()) {  //데이터가 존재하면 true를 반환해줌
+						if (rs.isBeforeFirst()) { // 데이터가 존재하면 true를 반환해줌
 							while (rs.next()) {
 								skuNamedata.setText(rs.getString("sku_name"));
 								kinddata.setText(rs.getString("sku_kind"));
@@ -95,7 +96,7 @@ public class SubBtnListener1 extends JFrame {
 				}
 			});
 			upBtn.addActionListener(new ActionListener() {
-				
+
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
@@ -105,30 +106,36 @@ public class SubBtnListener1 extends JFrame {
 					codeTf.setEditable(exp);
 				}
 			});
-			
+
 			creatBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					if(exp == false && inTf.getText() != null ) {
-						creat();
-					}
+					if (exp == false && inTf.getText().length() != 0) {
+						creat(codeTf.getText(), skuNamedata.getText(), kinddata.getText(),
+								Integer.parseInt(inTf.getText()), ordernum.getText());
+						skuNamedata.setText("");
+						kinddata.setText("");
+						inTf.setText("");
+						exp = true;
+						codeTf.setText("");
+						codeTf.setEditable(exp);
+						
+						// 발주내역 추가후 새로운 오더번호 받기
+						LocalDateTime now = LocalDateTime.now();
+						formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+						ordernum.setText("IO" + formatedNow);
+						JOptionPane.showMessageDialog(null, "발주신청이 생성되였습니다", "알림", 1);
+					} else 
+						JOptionPane.showMessageDialog(null, "입력정보를 확인해주세요", "알림", 1);
 				}
 			});
 
-//			model.setDataVector(result, title);
-//			table = new JTable(model);
-//			JScrollPane sp = new JScrollPane(table);
-//			jp.add(sp, BorderLayout.CENTER);
-//			jp.add(upPanel, BorderLayout.SOUTH);
-//			result = null;
 		}
 	}
 
 	public void locationSetting() {
 
-		LocalDateTime now = LocalDateTime.now();
-		String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 		// 현재 시간으로 오더번호 생성 입고는 IO,출고는 OP로 시작;
 		ordernum = new JLabel("IO" + formatedNow);
 		headname.setFont(new Font("맑은 고딕", Font.BOLD, 30));
@@ -166,10 +173,27 @@ public class SubBtnListener1 extends JFrame {
 			System.out.println("실행오류");
 		}
 	}
-	public void creat() {
-		
-		
-		
+
+	public void creat(String sku, String name, String kind, int num, String order) {
+
+		try {
+			pstmtInsert = conn.prepareStatement(
+"insert into iohistory(sku_code,sku_name,sku_kind,ordernum,ex_num,oder_kind,complete) values( ?,? ,"
+							+ "? ,?,?,?,?)");
+			pstmtInsert.setString(1, sku);
+			pstmtInsert.setString(2, name);
+			pstmtInsert.setString(3, kind);
+			pstmtInsert.setString(4, order);
+			pstmtInsert.setInt(5, num);
+			pstmtInsert.setString(6, "입고");
+			pstmtInsert.setString(7, "yet");
+			pstmtInsert.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public static void main(String[] args) {
