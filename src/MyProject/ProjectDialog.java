@@ -95,7 +95,7 @@ public class ProjectDialog extends JDialog {
 		subMenuContainer = new JPanel();
 		subMenuContainer.setSize(900, 500);
 		subMenuContainer.setLocation(350, 200);
-		subMenuContainer.setBackground(new Color(50, 220, 71));
+//		subMenuContainer.setBackground(new Color(50, 220, 71));
 
 		add(menuL);
 		add(new textPanel());

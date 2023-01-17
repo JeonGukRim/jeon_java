@@ -2,7 +2,8 @@ package test1;
 
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,6 +19,9 @@ public class testststst extends JFrame {
 		Container c = getContentPane();
 		c.setLayout(new FlowLayout());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		LocalDateTime now = LocalDateTime.now();
+        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+		jl.setText("IO"+formatedNow);
 		c.add(jl);
 		c.add(tf);
 		setSize(400, 400);
@@ -45,11 +49,13 @@ public class testststst extends JFrame {
 //		}
 
 		new testststst();
-		long time = System.currentTimeMillis();
-		SimpleDateFormat simpl = new SimpleDateFormat("yyyyMMddaahhmmss");
-		String s = simpl.format(time);
-		System.out.print(time);
-
+		 	
+	        
+//	        System.out.println(formatedNow);  // 2021년 06월 17일 06시 43분 21초
+		
+		
+		
+		
 	}
 
 }

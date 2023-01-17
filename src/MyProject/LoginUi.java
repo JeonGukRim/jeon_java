@@ -87,7 +87,6 @@ public class LoginUi extends JFrame {
 					rs = stmt.executeQuery("select * from masterid");
 					else
 					rs = stmt.executeQuery("select * from workerid");	
-					
 					while (rs.next()) {
 						if (loginTf.getText().equals(rs.getString("id")) && pwTf.getText().equals(rs.getString("pw"))) {
 							setVisible(false);
