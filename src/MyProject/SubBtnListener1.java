@@ -56,8 +56,10 @@ public class SubBtnListener1 extends JFrame {
 	private JLabel innum = new JLabel("입고예정수량:");
 	private JTextField inTf = new JTextField(20);
 	private JButton creatBtn = new JButton("생성");
-	private JButton cancelBtn = new JButton("취소");
-
+	private JButton upBtn = new JButton("수정");
+	private Boolean exp;
+	
+	
 	public SubBtnListener1(JPanel mainP, String text) {
 		this.mainP = mainP;
 		this.text = text;
@@ -71,14 +73,19 @@ public class SubBtnListener1 extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
+					JTextField t = (JTextField) e.getSource();
 					try {
-						rs = stmt.executeQuery("select * from productlist where sku_code ='" + codeTf.getText() + "';");
-						if (rs.next()) {
+						rs = stmt.executeQuery("select * from productlist where sku_code ='" + t.getText() + "';");
+						if (rs.isBeforeFirst()) {  //데이터가 존재하면 true를 반환해줌
 							while (rs.next()) {
 								skuNamedata.setText(rs.getString("sku_name"));
 								kinddata.setText(rs.getString("sku_kind"));
 							}
+							exp = false;
+							t.setEditable(exp);
 						} else {
+							skuNamedata.setText("");
+							kinddata.setText("");
 							JOptionPane.showMessageDialog(null, "존재하지 않는 코드 입니다\n코드를 새로 생성후 진행하세요!", "입력오류", 1);
 						}
 					} catch (SQLException e1) {
@@ -87,11 +94,25 @@ public class SubBtnListener1 extends JFrame {
 					}
 				}
 			});
+			upBtn.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					exp = true;
+					skuNamedata.setText("");
+					kinddata.setText("");
+					codeTf.setEditable(exp);
+				}
+			});
+			
 			creatBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-
+					if(exp == false && inTf.getText() != null ) {
+						creat();
+					}
 				}
 			});
 
@@ -129,7 +150,7 @@ public class SubBtnListener1 extends JFrame {
 		centerP.add(inTf);
 		testP.add(centerP, BorderLayout.NORTH);
 		southP.add(creatBtn);
-		southP.add(cancelBtn);
+		southP.add(upBtn);
 		mainP.add(testP, BorderLayout.CENTER);
 		mainP.add(southP, BorderLayout.SOUTH);
 	}
@@ -144,6 +165,11 @@ public class SubBtnListener1 extends JFrame {
 		} catch (SQLException e1) {
 			System.out.println("실행오류");
 		}
+	}
+	public void creat() {
+		
+		
+		
 	}
 
 	public static void main(String[] args) {
