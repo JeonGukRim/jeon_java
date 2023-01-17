@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -38,7 +39,7 @@ public class LoginUi extends JFrame {
 	private Connection conn;
 	private Statement stmt = null;
 	private ResultSet rs = null;
-	
+
 	public LoginUi() {
 		// 관리자 모드 여부 체크박스
 //		ck = new JCheckBox("",image2);
@@ -56,37 +57,53 @@ public class LoginUi extends JFrame {
 		loginTf.setSize(400, 40);
 		loginTf.setBackground(Color.ORANGE);
 		loginTf.setLocation(880, 471);
+		
+		loginTf.setText("masterid");
+		
 		pwjl.setLocation(800, 450);
 		pwjl.setSize(200, 200);
 		pwjl.setFont(new Font("Arial", Font.ITALIC, 30));
 		pwTf.setSize(400, 40);
 		pwTf.setBackground(Color.ORANGE);
 		pwTf.setLocation(880, 533);
+		
+		pwTf.setText("123123");
 
 		login.setSize(200, 30);
 		login.setLocation(840, 620);
-
-		dialog = new ProjectDialog(this, "로그인 성공");
+		if(ck.isSelected()) {
+		dialog = new ProjectDialog(this, "로그인 성공","관리자 모드");
+		}else {
+			dialog = new ProjectDialog(this,"로그인 성공","작업자 모드");
+		}
 		dbclass();
-		
-		
-//		login.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				// TODO Auto-generated method stub
-//				try {
-//					rs = stmt.executeQuery("select * from masterid");
-//					if(loginTf.getText().equals(rs.getString("id"))&&pwTf.getText().equals(rs.getString("pw"))) {
-//						setVisible(false);
-//						dialog.setVisible(true);
-//						}
-//				} catch (SQLException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//				
-//			}
-//		});
+
+		login.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+					if(ck.isSelected())
+					rs = stmt.executeQuery("select * from masterid");
+					else
+					rs = stmt.executeQuery("select * from workerid");	
+					
+					while (rs.next()) {
+						if (loginTf.getText().equals(rs.getString("id")) && pwTf.getText().equals(rs.getString("pw"))) {
+							setVisible(false);
+							dialog.setVisible(true);
+						}else {
+							JOptionPane.showMessageDialog(null,"아이디 비밀번호가 일치하지 않습니다","로그인실패",JOptionPane.ERROR_MESSAGE);
+						}
+					}
+
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		});
 
 		panel.add(ck);
 		panel.add(idjl);
@@ -142,9 +159,9 @@ public class LoginUi extends JFrame {
 
 	public void dbclass() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver"); 
+			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/myproject", "root", "test123"); // JDBC 연결
-			stmt = conn.createStatement(); 
+			stmt = conn.createStatement();
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 로드 오류");
 		} catch (SQLException e1) {

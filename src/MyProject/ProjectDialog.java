@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -20,6 +21,7 @@ public class ProjectDialog extends JDialog {
 	private JButton btn1, btn2, btn3, btn4, btn5;
 	private JButton[] menuBtn = new JButton[5];
 	private JPanel menuL, pNorth, pSouth, subMenuContainer;
+	private JLabel modeJl;
 	private JScrollPane pCenter;
 	private JButton[] subBtn = new JButton[10];
 	private String[] btnname = { "재고현황조회", "검색", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "재고이동", "상품정보조회",
@@ -29,14 +31,18 @@ public class ProjectDialog extends JDialog {
 	private static boolean expand2 = false;
 	private static boolean expand3 = false;
 	private static boolean expand4 = false;
-
-	public ProjectDialog(JFrame frame, String title) {
+	public ProjectDialog() {}
+	public ProjectDialog(JFrame frame, String title,String mode) {
 		super(frame, title, true);
 		for (int i = 0; i < subBtn.length; i++) {
 			subBtn[i] = new JButton(btnname[i]);
 			subBtn[i].setBackground(Color.white);
 		}
-
+		modeJl = new JLabel(mode);
+		modeJl.setFont(new Font("맑은 고딕",Font.BOLD,30));
+		modeJl.setSize(300,200);
+		modeJl.setLocation(90,20);
+		
 		pNorth = new JPanel();
 		menuL = new JPanel();
 //		Container c = getContentPane();
@@ -93,6 +99,7 @@ public class ProjectDialog extends JDialog {
 
 		add(menuL);
 		add(new textPanel());
+		add(modeJl);
 		setSize(1500, 900);
 	}
 

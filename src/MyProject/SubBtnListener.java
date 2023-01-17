@@ -95,6 +95,7 @@ public class SubBtnListener extends JFrame {
 					update(code, memo);
 					re(); //데이터 값 가져오기
 					model.setDataVector(result, title);
+					
 				}
 			});
 			if (text.equals("재고현황조회")) {
@@ -149,6 +150,7 @@ public class SubBtnListener extends JFrame {
 			pstmtUpdate.setString(1, memo);
 			pstmtUpdate.setString(2, code);
 			pstmtUpdate.executeUpdate();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
