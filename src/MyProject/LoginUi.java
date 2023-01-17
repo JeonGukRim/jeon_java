@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -120,7 +122,21 @@ public class LoginUi extends JFrame {
 		setBackground(Color.white);
 		setSize(1500, 900);
 		setVisible(true);
+		
+		addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent w) {
+				try{
+					stmt.close(); // Statement 객체 닫기
+					conn.close(); // Connection 객체 닫기
+					setVisible(false); // 화면 닫기
+					dispose(); // 자원 반납
+					System.exit(0); // 종료 처리
+				}catch(Exception e){
 
+				}
+			}
+		});
 	}
 
 	class MyPanel extends JPanel {

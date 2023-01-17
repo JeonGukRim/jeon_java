@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -22,8 +23,14 @@ public class testststst extends JFrame {
 		LocalDateTime now = LocalDateTime.now();
         String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 		jl.setText("IO"+formatedNow);
+		
+//		for(int i = 0 ; i <2; i++) {
+////		JComboBox<Integer> orderCombo = (JComboBox<Integer>)i;
+//		}
+//		
 		c.add(jl);
 		c.add(tf);
+//		c.add(orderCombo);
 		setSize(400, 400);
 		setVisible(true);
 

@@ -95,7 +95,6 @@ public class SubBtnListener extends JFrame {
 					update(code, memo);
 					re(); //데이터 값 가져오기
 					model.setDataVector(result, title);
-					
 				}
 			});
 			if (text.equals("재고현황조회")) {
@@ -207,8 +206,6 @@ public class SubBtnListener extends JFrame {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-//		SubBtnListener tf = new SubBtnListener();
-//		tf.DbClass();
 	}
 
 }

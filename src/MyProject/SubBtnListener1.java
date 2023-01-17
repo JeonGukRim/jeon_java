@@ -1,6 +1,7 @@
 package MyProject;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -66,9 +68,10 @@ public class SubBtnListener1 extends JFrame {
 		mainP.setLayout(new BorderLayout());
 		LocalDateTime now = LocalDateTime.now();
 		formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+		DbClass();
+/*-------------------------------------------------------------------------------------------*/
 		if (text.equals("발주서 생성")) {
 			mainP.removeAll();
-			DbClass();
 			locationSetting();
 			codeTf.addActionListener(new ActionListener() {
 				@Override
@@ -132,6 +135,18 @@ public class SubBtnListener1 extends JFrame {
 			});
 
 		}
+		
+/*-------------------------------------------------------------------------------------------*/		
+		if (text.equals("입고")) {
+			mainP.removeAll();
+			locationSetting1();
+		}
+		
+		
+		
+		
+		
+		
 	}
 
 	public void locationSetting() {
@@ -162,6 +177,46 @@ public class SubBtnListener1 extends JFrame {
 		mainP.add(southP, BorderLayout.SOUTH);
 	}
 
+	public void locationSetting1() {
+		JButton view = new JButton("조회");
+//		JComboBox<String> orderCombo = new JComboBox<String>();
+//		
+//		try {
+//			rs = stmt.executeQuery("select * from iohistroy where complete ='yet' and oder_kind ='입고'");
+//			while(rs.next()) {
+//			orderCombo =	
+//			}
+//			
+//			
+//			
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		
+		
+		resetP();
+		northP.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+		northP.add(order);
+//		northP.add(orderCombo);
+		northP.add(view);
+		mainP.add(northP,BorderLayout.NORTH);
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	public void resetP() {
+		northP.removeAll();
+		southP.removeAll();
+		centerP.removeAll();
+	}
+	
 	public void DbClass() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver"); // MySQL 드라이버 로드
