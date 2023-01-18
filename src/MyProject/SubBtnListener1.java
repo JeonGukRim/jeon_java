@@ -49,13 +49,13 @@ public class SubBtnListener1 extends JFrame {
 	/*--------------------발주서 생성기능-------------------------------*/
 	private JLabel headname = new JLabel("발주서 생성");
 	private JLabel order = new JLabel("오더번호");
-	private JLabel ordernum;
+	private JLabel ordernum = new JLabel();
 	private JLabel skuCode = new JLabel("SKU코드:");
 	private JTextField codeTf = new JTextField(20);
 	private JLabel skuName = new JLabel("제품명:");
-	private JLabel skuNamedata;
+	private JLabel skuNamedata = new JLabel();
 	private JLabel kind = new JLabel("분류:");
-	private JLabel kinddata;
+	private JLabel kinddata = new JLabel();
 	private JLabel innum = new JLabel("입고예정수량:");
 	private JTextField inTf = new JTextField(20);
 	private JButton creatBtn = new JButton("생성");
@@ -67,8 +67,11 @@ public class SubBtnListener1 extends JFrame {
 	private JButton view = new JButton("조회");
 	private JComboBox<String> orderCombo;
 	private JLabel realinNumJl = new JLabel("실제 입고수량:");
-	private JLabel skuCodeJl, indata, skuLocation, skuLocationdata;
+	private JLabel skuCodeJl = new JLabel();
+	private JLabel indata = new JLabel();
 	private JTextField realinNumTf = new JTextField(20);
+	private JLabel skuLocation = new JLabel("재고위치:");
+	private JTextField skuLocationTf = new JTextField(20);
 	private JButton inBtn = new JButton("입고완료");
 
 	public SubBtnListener1(JPanel mainP, String text) {
@@ -184,50 +187,66 @@ public class SubBtnListener1 extends JFrame {
 	}
 
 	public void locationSetting1() { // 입고 세팅
-		Vector orderlist = new Vector<>();
-		try {
-			rs = stmt.executeQuery("select * from iohistory where complete ='yet' and oder_kind ='입고'");
-			while (rs.next()) {
-				String orderNum = rs.getString("ordernum");
-				orderlist.add(orderNum);
-			}
-			orderCombo = new JComboBox<String>(orderlist);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		northP.setLayout(new FlowLayout(FlowLayout.LEFT, 50, 0));
+		creatComboBox();
+
+		northP.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 0));
 		northP.add(order);
 		northP.add(orderCombo);
 		northP.add(view);
 		mainP.add(northP, BorderLayout.NORTH);
-		
-		testP.setLayout(new GridLayout(6,2,40,40));
+
+		testP.setLayout(new GridLayout(6, 2, 40, 40));
 		testP.add(skuCode);
-		testP.add(skuCode);
-//		testP.add(skuCodeJl);
+		testP.add(skuCodeJl);
 		testP.add(skuName);
-		testP.add(skuName);
-//		testP.add(skuNamedata);
+		testP.add(skuNamedata);
 		testP.add(kind);
-		testP.add(kind);
-//		testP.add(kinddata);
+		testP.add(kinddata);
 		testP.add(innum);
-		testP.add(innum);
-//		testP.add(indata);
-		testP.add(innum);
-		testP.add(innum);
-//		testP.add(skuLocation);
-//		testP.add(skuLocationdata);
+		testP.add(indata);
+		testP.add(skuLocation);
+		testP.add(skuLocationTf);
 		testP.add(realinNumJl);
 		testP.add(realinNumTf);
-		centerP.add(testP,BorderLayout.NORTH);
+		centerP.add(testP, BorderLayout.NORTH);
 		mainP.add(centerP, BorderLayout.CENTER);
-		
-		
-		
-		
 
+		southP.add(inBtn);
+		mainP.add(southP, BorderLayout.SOUTH);
+
+		view.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				ResultSet rs1 = null;
+				if (orderCombo != null) {
+					try {
+						ResultSet rs = stmt.executeQuery("select * from iohistory where ordernum ='"
+								+ orderCombo.getSelectedItem().toString() + "'");
+						while (rs.next()) {
+							skuCodeJl.setText(rs.getString("sku_code"));
+							skuNamedata.setText(rs.getString("sku_name"));
+							kinddata.setText(rs.getString("sku_kind"));
+							indata.setText(rs.getString("ex_num"));
+
+						
+							
+							
+							
+							
+							
+							
+							
+						
+						}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+				}
+			}
+		});
 	}
 
 	// 모드 패널 리셋
@@ -244,6 +263,21 @@ public class SubBtnListener1 extends JFrame {
 		centerP.repaint();
 		testP.repaint();
 
+	}
+
+	public void creatComboBox() {
+		Vector orderlist = new Vector<>();
+		try {
+			rs = stmt.executeQuery("select * from iohistory where complete ='yet' and oder_kind ='입고'");
+			while (rs.next()) {
+				String orderNum = rs.getString("ordernum");
+				orderlist.add(orderNum);
+			}
+			orderCombo = new JComboBox<String>(orderlist);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// db에 연결

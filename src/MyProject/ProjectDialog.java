@@ -24,7 +24,7 @@ public class ProjectDialog extends JDialog {
 	private JLabel modeJl;
 	private JScrollPane pCenter;
 	private JButton[] subBtn = new JButton[10];
-	private String[] btnname = { "재고현황조회", "검색", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "재고이동", "상품정보조회",
+	private String[] btnname = { "재고현황조회", "검색", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "출고", "상품정보조회",
 			"ID정보관리" };
 	private static boolean expand = false;
 	private static boolean expand1 = false;
