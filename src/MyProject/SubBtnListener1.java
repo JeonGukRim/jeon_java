@@ -6,12 +6,9 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Vector;
@@ -22,7 +19,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 public class SubBtnListener1 extends JFrame {
 	private JPanel mainP = new JPanel(); // 메인패널
@@ -30,22 +30,11 @@ public class SubBtnListener1 extends JFrame {
 	private JPanel testP = new JPanel(); //
 	private JPanel centerP = new JPanel(); //
 	private JPanel southP = new JPanel(); //
-
-//	private Connection conn;
-//	private Statement stmt = null;
 	private ResultSet rs = null;
 	private String text = null;
 
-	//	// 테이블에 조회될 데이터
-//	private Vector data = null;
-//	// 테이블 컬러 타이틀
-//	private Vector title = null;
-//	// 테이블 객체
-//	private JTable table = null;
-//	// 테이블과 내용 담는 객체
-//	private DefaultTableModel model = null;
-//	private Vector result;
-//	private PreparedStatement pstmtAdd = null;
+
+
 
 	/*--------------------발주서 생성기능-------------------------------*/
 	private JLabel headname = new JLabel("발주서 생성");
@@ -75,6 +64,22 @@ public class SubBtnListener1 extends JFrame {
 	private JLabel skuLocation = new JLabel("재고위치:(Enter키로확인)");
 	private JTextField skuLocationTf = new JTextField(20);
 	private JButton inBtn = new JButton("입고완료");
+	/*---------------------Location정보-------------------------*/
+	private JButton addBtn = new JButton("추가");
+	private JTextField loTf = new JTextField(20);
+	private JButton delBtn = new JButton("삭제");
+	private JButton seaBtn = new JButton("검색");
+	private Vector data = null;
+	private Vector title = null;
+	private JTable table = null;
+	private DefaultTableModel model = null;
+	private Vector result;
+	private PreparedStatement pstmtDel = null;
+	
+	
+	
+	
+	
 	private String loginid;
 	private LoginUi l;
 	
@@ -284,6 +289,11 @@ public class SubBtnListener1 extends JFrame {
 				}
 			});
 		}
+		if (text.equals("Location정보")) {
+			resetP();
+			locationSetting2();
+			
+		}
 
 	}
 
@@ -346,6 +356,25 @@ public class SubBtnListener1 extends JFrame {
 	
 	}
 
+	public void locationSetting2() {// 재고위치 세팅
+		
+		northP.setLayout(new FlowLayout(FlowLayout.LEFT,40,0));
+		northP.add(new JLabel("추가/삭제 재고위치 >>"));
+		northP.add(loTf);
+		northP.add(seaBtn);
+		northP.add(addBtn);
+		northP.add(delBtn);
+		mainP.add(northP,BorderLayout.NORTH);
+		
+		title = new Vector<>();
+		data = new Vector<>();
+		model = new DefaultTableModel();
+		model.setDataVector(result, title);
+		table = new JTable(model);
+		JScrollPane sp = new JScrollPane(table);
+		
+	}
+	
 	// 모드 패널 리셋
 	public void resetP() {
 		
