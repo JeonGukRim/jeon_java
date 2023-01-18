@@ -66,7 +66,8 @@ public class SubBtnListener1 extends JFrame {
 	/*---------------------입고---------------------------------*/
 	private JButton view = new JButton("조회");
 	private JComboBox<String> orderCombo;
-	private JLabel skuCodeJl, indata, skuLocation, skuLocationdata, realinNumJl;
+	private JLabel realinNumJl = new JLabel("실제 입고수량:");
+	private JLabel skuCodeJl, indata, skuLocation, skuLocationdata;
 	private JTextField realinNumTf = new JTextField(20);
 	private JButton inBtn = new JButton("입고완료");
 
@@ -203,18 +204,25 @@ public class SubBtnListener1 extends JFrame {
 		
 		testP.setLayout(new GridLayout(6,2,40,40));
 		testP.add(skuCode);
-		testP.add(skuCodeJl);
+		testP.add(skuCode);
+//		testP.add(skuCodeJl);
 		testP.add(skuName);
-		testP.add(skuNamedata);
+		testP.add(skuName);
+//		testP.add(skuNamedata);
 		testP.add(kind);
-		testP.add(kinddata);
+		testP.add(kind);
+//		testP.add(kinddata);
 		testP.add(innum);
-		testP.add(indata);
-		testP.add(skuLocation);
-		testP.add(skuLocationdata);
+		testP.add(innum);
+//		testP.add(indata);
+		testP.add(innum);
+		testP.add(innum);
+//		testP.add(skuLocation);
+//		testP.add(skuLocationdata);
 		testP.add(realinNumJl);
 		testP.add(realinNumTf);
-		mainP.add(testP, BorderLayout.CENTER);
+		centerP.add(testP,BorderLayout.NORTH);
+		mainP.add(centerP, BorderLayout.CENTER);
 		
 		
 		
