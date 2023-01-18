@@ -35,7 +35,8 @@ public class SubBtnListener1 extends JFrame {
 //	private Statement stmt = null;
 	private ResultSet rs = null;
 	private String text = null;
-//	// 테이블에 조회될 데이터
+
+	//	// 테이블에 조회될 데이터
 //	private Vector data = null;
 //	// 테이블 컬러 타이틀
 //	private Vector title = null;
@@ -162,10 +163,11 @@ public class SubBtnListener1 extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
+					String select = orderCombo.getSelectedItem().toString();
 					if (orderCombo != null) {
 						try {
 							ResultSet rs = l.stmt.executeQuery("select * from iohistory where ordernum ='"
-									+ orderCombo.getSelectedItem().toString() + "'");
+									+ select + "'");
 							while (rs.next()) {
 								skuCodeJl.setText(rs.getString("sku_code"));
 								skuNamedata.setText(rs.getString("sku_name"));
@@ -199,7 +201,8 @@ public class SubBtnListener1 extends JFrame {
 							}
 						}
 					});	
-					//입고 완료후 실제 입고수량,입고날짜 작업자 id 기록
+					
+					//입고완료 저장
 					inBtn.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -209,36 +212,72 @@ public class SubBtnListener1 extends JFrame {
 							LocalDateTime now = LocalDateTime.now();
 							formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분"));
 							try {
+								
+								//입출고 이력에 실제 입고수량 날짜 작업자 id 저장
 								if(Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())) {
-								pstmtInsert = l.conn.prepareStatement(
-										"insert into iohistory(realnum,complete,worker_id,work_date) values( ?,? ,"
-												+ "? ,?)");
-								pstmtInsert.setString(1,realinNumTf.getText());
-								pstmtInsert.setString(2,"over");
-								pstmtInsert.setString(3,loginid);
-								pstmtInsert.setString(4,formatedNow);
-								pstmtInsert.executeUpdate();
+								pstmtUpdate = l.conn.prepareStatement(
+										"update  iohistory set realnum = ?,complete = ?,worker_id = ?,work_date = ? where ordernum =?");
+								pstmtUpdate.setInt(1,Integer.parseInt(realinNumTf.getText()));
+								pstmtUpdate.setString(2,"over");  //작업끝났으면 오버로 표시
+								pstmtUpdate.setString(3,loginid);
+								pstmtUpdate.setString(4,formatedNow);
+								pstmtUpdate.setString(5,select);
+								pstmtUpdate.executeUpdate();
 								
 								}else {
 									JOptionPane.showMessageDialog(null, "실제 입고수량을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
 								}
+								
+								
+								//리스트에 같은 제품과 재고위치에 재고가 존재한다면 재고 추가
+								if(Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())) {
 								rs=l.stmt.executeQuery
 								("select * from listdb  where sku_location = '"+skuLocationTf.getText()+"' and sku_code='"+
 								skuCodeJl.getText() +"'");
 								if(rs.isBeforeFirst()) {
+									int num = 0;
 									pstmtUpdate = l.conn.prepareStatement
 											("update listdb set sku_finalnum = ? where sku_location = ? and sku_code = ?");
-									int num = rs.getInt("sku_finalnum")+Integer.parseInt(realinNumTf.getText());
+									while(rs.next()) {
+									num = rs.getInt("sku_finalnum");
+									}
+									
+									num += Integer.parseInt(realinNumTf.getText());
 									pstmtUpdate.setInt(1, num);
+									pstmtUpdate.setString(2, skuLocationTf.getText());
+									pstmtUpdate.setString(3, skuCodeJl.getText());
 									pstmtUpdate.executeUpdate();
 								}
+								else{
+									pstmtInsert = l.conn.prepareStatement(
+											"insert into listdb(sku_code,sku_name,sku_kind,sku_location,sku_finalnum) values( ?,? ,"
+													+ "? ,?,?)");
+									int num1 = Integer.parseInt(realinNumTf.getText());
+									pstmtInsert.setString(1,skuCodeJl.getText());
+									pstmtInsert.setString(2,skuNamedata.getText());
+									pstmtInsert.setString(3,kinddata.getText());
+									pstmtInsert.setString(4,skuLocationTf.getText());
+									pstmtInsert.setInt(5,num1);
+									pstmtInsert.executeUpdate();
+								}
 								
+								orderCombo.removeAll();
+								skuCodeJl.setText("");
+								skuNamedata.setText("");
+								kinddata.setText("");
+								indata.setText("");
+								realinNumTf.setText("");
+								skuLocationTf.setText("");
+								resetP();
 								locationSetting1();
+								JOptionPane.showMessageDialog(null, "입고완료 되였습니다", "알림", 1);
+								}
 							} catch (SQLException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
 						}
+						
 					});
 					
 					
@@ -279,7 +318,6 @@ public class SubBtnListener1 extends JFrame {
 
 	public void locationSetting1() { // 입고 세팅
 		creatComboBox();
-
 		northP.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 0));
 		northP.add(order);
 		northP.add(orderCombo);
@@ -310,6 +348,7 @@ public class SubBtnListener1 extends JFrame {
 
 	// 모드 패널 리셋
 	public void resetP() {
+		
 		mainP.removeAll();
 		northP.removeAll();
 		southP.removeAll();
@@ -321,7 +360,7 @@ public class SubBtnListener1 extends JFrame {
 		southP.repaint();
 		centerP.repaint();
 		testP.repaint();
-
+		
 	}
 
 	public void creatComboBox() {

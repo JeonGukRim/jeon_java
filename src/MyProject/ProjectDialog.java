@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -35,11 +37,14 @@ public class ProjectDialog extends JDialog {
 	private static boolean expand4 = false;
 	private String loginid;
 	public JFrame frame;
+	private LoginUi l;
+	
 	public ProjectDialog() {}
 	public ProjectDialog(JFrame frame, String title,String mode,String loginid) {
 		super(frame, title, true);
 		this.loginid = loginid;
 		this.frame = frame;
+		l = (LoginUi) frame;
 		for (int i = 0; i < subBtn.length; i++) {
 			subBtn[i] = new JButton(btnname[i]);
 			subBtn[i].setBackground(Color.white);
@@ -107,6 +112,21 @@ public class ProjectDialog extends JDialog {
 		add(new textPanel());
 		add(modeJl);
 		setSize(1500, 900);
+		
+		addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent w) {
+				try{
+					l.stmt.close(); // Statement 객체 닫기
+					l.conn.close(); // Connection 객체 닫기
+					setVisible(false); // 화면 닫기
+					dispose(); // 자원 반납
+					System.exit(0); // 종료 처리
+				}catch(Exception e){
+
+				}
+			}
+		});
 	}
 
 	private class ActionHandlerR implements ActionListener {

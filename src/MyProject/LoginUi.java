@@ -123,20 +123,20 @@ public class LoginUi extends JFrame {
 		setSize(1500, 900);
 		setVisible(true);
 		
-		addWindowListener(new WindowAdapter(){
-			@Override
-			public void windowClosing(WindowEvent w) {
-				try{
-					stmt.close(); // Statement 객체 닫기
-					conn.close(); // Connection 객체 닫기
-					setVisible(false); // 화면 닫기
-					dispose(); // 자원 반납
-					System.exit(0); // 종료 처리
-				}catch(Exception e){
-
-				}
-			}
-		});
+//		addWindowListener(new WindowAdapter(){
+//			@Override
+//			public void windowClosing(WindowEvent w) {
+//				try{
+//					stmt.close(); // Statement 객체 닫기
+//					conn.close(); // Connection 객체 닫기
+//					setVisible(false); // 화면 닫기
+//					dispose(); // 자원 반납
+//					System.exit(0); // 종료 처리
+//				}catch(Exception e){
+//
+//				}
+//			}
+//		});
 	}
 
 	class MyPanel extends JPanel {
