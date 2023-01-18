@@ -62,6 +62,7 @@ public class SubBtnListener1 extends JFrame {
 	private JButton upBtn = new JButton("새로고침");
 	private Boolean exp = true;
 	private PreparedStatement pstmtInsert = null;
+	private PreparedStatement pstmtUpdate = null;
 	private String formatedNow = null;
 	/*---------------------입고---------------------------------*/
 	private JButton view = new JButton("조회");
@@ -73,10 +74,14 @@ public class SubBtnListener1 extends JFrame {
 	private JLabel skuLocation = new JLabel("재고위치:(Enter키로확인)");
 	private JTextField skuLocationTf = new JTextField(20);
 	private JButton inBtn = new JButton("입고완료");
-
-	public SubBtnListener1(JPanel mainP, String text) {
+	private String loginid;
+	
+	public SubBtnListener1() {}
+	public SubBtnListener1(JPanel mainP, String text,String loginid) {
 		this.mainP = mainP;
 		this.text = text;
+		this.loginid = loginid;
+		
 		mainP.setLayout(new BorderLayout());
 		LocalDateTime now = LocalDateTime.now();
 		formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
@@ -152,7 +157,92 @@ public class SubBtnListener1 extends JFrame {
 		if (text.equals("입고")) {
 			resetP();
 			locationSetting1();
-
+			view.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					if (orderCombo != null) {
+						try {
+							ResultSet rs = stmt.executeQuery("select * from iohistory where ordernum ='"
+									+ orderCombo.getSelectedItem().toString() + "'");
+							while (rs.next()) {
+								skuCodeJl.setText(rs.getString("sku_code"));
+								skuNamedata.setText(rs.getString("sku_name"));
+								kinddata.setText(rs.getString("sku_kind"));
+								indata.setText(rs.getString("ex_num"));
+							}
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+					
+					// 재고위치 정보 존재여부 판단
+					skuLocationTf.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+							try {
+								ResultSet rs = stmt.executeQuery
+										("select * from locationdb  where sku_location = '"+skuLocationTf.getText()+"'");
+								if(!rs.isBeforeFirst()) {
+									JOptionPane.showMessageDialog(null, "존재하지 않는 재고위치입니다", "입력오류", 1);
+									skuLocationTf.setText("");
+								}else {
+									JOptionPane.showMessageDialog(null, "확인되였습니다", "OK", 1);
+								}
+							
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+					});	
+					//입고 완료후 실제 입고수량,입고날짜 작업자 id 기록
+					inBtn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+//							loginTf.getText();
+//							LoginUi()
+							LocalDateTime now = LocalDateTime.now();
+							formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분"));
+							try {
+								if(Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())) {
+								pstmtInsert = conn.prepareStatement(
+										"insert into iohistory(realnum,complete,worker_id,work_date) values( ?,? ,"
+												+ "? ,?)");
+								pstmtInsert.setString(1,realinNumTf.getText());
+								pstmtInsert.setString(2,"over");
+								pstmtInsert.setString(3,loginid);
+								pstmtInsert.setString(4,formatedNow);
+								pstmtInsert.executeUpdate();
+								
+								}else {
+									JOptionPane.showMessageDialog(null, "실제 입고수량을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
+								}
+								rs=stmt.executeQuery
+								("select * from listdb  where sku_location = '"+skuLocationTf.getText()+"' and sku_code='"+
+								skuCodeJl.getText() +"'");
+								if(rs.isBeforeFirst()) {
+									pstmtUpdate = conn.prepareStatement
+											("update listdb set sku_finalnum = ? where sku_location = ? and sku_code = ?");
+									int num = rs.getInt("sku_finalnum")+Integer.parseInt(realinNumTf.getText());
+									pstmtUpdate.setInt(1, num);
+									pstmtUpdate.executeUpdate();
+								}
+								
+								locationSetting1();
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+					});
+					
+					
+				}
+			});
 		}
 
 	}
@@ -214,71 +304,7 @@ public class SubBtnListener1 extends JFrame {
 		southP.add(inBtn);
 		mainP.add(southP, BorderLayout.SOUTH);
 
-		view.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				ResultSet rs1 = null;
-				if (orderCombo != null) {
-					try {
-						ResultSet rs = stmt.executeQuery("select * from iohistory where ordernum ='"
-								+ orderCombo.getSelectedItem().toString() + "'");
-						while (rs.next()) {
-							skuCodeJl.setText(rs.getString("sku_code"));
-							skuNamedata.setText(rs.getString("sku_name"));
-							kinddata.setText(rs.getString("sku_kind"));
-							indata.setText(rs.getString("ex_num"));
-						}
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-				
-				// 재고위치 정보 존재여부 판단
-				skuLocationTf.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						try {
-							ResultSet rs = stmt.executeQuery
-									("select * from locationdb  where sku_location = '"+skuLocationTf.getText()+"'");
-							if(!rs.isBeforeFirst()) {
-								JOptionPane.showMessageDialog(null, "존재하지 않는 재고위치입니다", "입력오류", 1);
-								skuLocationTf.setText("");
-							}else {
-								JOptionPane.showMessageDialog(null, "확인되였습니다", "OK", 1);
-							}
-						
-						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-				});	
-				//입고 완료후 실제 입고수량,입고날짜 작업자 id 기록
-				inBtn.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-//						loginTf.getText();
-						
-						try {
-//							pstmtInsert = conn.prepareStatement(
-//									"insert into iohistory(sku_code,sku_name,sku_kind,ordernum,ex_num,oder_kind,complete) values( ?,? ,"
-//											+ "? ,?,?,?,?)");
-//							pstmtInsert.setString(1,);
-							pstmtInsert.executeUpdate();
-						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-				});
-				
-				
-			}
-		});
+	
 	}
 
 	// 모드 패널 리셋

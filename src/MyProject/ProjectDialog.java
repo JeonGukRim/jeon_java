@@ -31,9 +31,11 @@ public class ProjectDialog extends JDialog {
 	private static boolean expand2 = false;
 	private static boolean expand3 = false;
 	private static boolean expand4 = false;
+	private String loginid;
 	public ProjectDialog() {}
-	public ProjectDialog(JFrame frame, String title,String mode) {
+	public ProjectDialog(JFrame frame, String title,String mode,String loginid) {
 		super(frame, title, true);
+		this.loginid = loginid;
 		for (int i = 0; i < subBtn.length; i++) {
 			subBtn[i] = new JButton(btnname[i]);
 			subBtn[i].setBackground(Color.white);
@@ -109,35 +111,35 @@ public class ProjectDialog extends JDialog {
 			for (int i = 0; i < subBtn.length; i++) {
 				if (subBtn[i] == e.getSource()) {
 					if (i == 0) {
-						new SubBtnListener(subMenuContainer, "재고현황조회");
+						new SubBtnListener(subMenuContainer, "재고현황조회",loginid);
 						getContentPane().add(subMenuContainer);
 
 					} else if (i == 1) {
-						new SubBtnListener(subMenuContainer, "검색");
+						new SubBtnListener(subMenuContainer, "검색",loginid);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 2) {
-						new SubBtnListener(subMenuContainer, "입출고 이력조회");
+						new SubBtnListener(subMenuContainer, "입출고 이력조회",loginid);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 3) {
-						new SubBtnListener1(subMenuContainer, "발주서 생성");
+						new SubBtnListener1(subMenuContainer, "발주서 생성",loginid);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 4) {
-						new SubBtnListener1(subMenuContainer, "입고");
+						new SubBtnListener1(subMenuContainer, "입고",loginid);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 5) {
-						new SubBtnListener1(subMenuContainer, "Location정보");
+						new SubBtnListener1(subMenuContainer, "Location정보",loginid);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 6) {
-						new SubBtnListener(subMenuContainer, "출고오더생성");
+						new SubBtnListener(subMenuContainer, "출고오더생성",loginid);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 7) {
-						new SubBtnListener(subMenuContainer, "재고이동");
+						new SubBtnListener(subMenuContainer, "재고이동",loginid);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 8) {
-						new SubBtnListener(subMenuContainer, "상품정보조회");
+						new SubBtnListener(subMenuContainer, "상품정보조회",loginid);
 						getContentPane().add(subMenuContainer);
 					} else {
-						new SubBtnListener(subMenuContainer, "ID정보관리");
+						new SubBtnListener(subMenuContainer, "ID정보관리",loginid);
 						getContentPane().add(subMenuContainer);
 					}
 				}

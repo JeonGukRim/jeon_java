@@ -58,11 +58,12 @@ public class SubBtnListener extends JFrame {
 	
 	
 	
-	
+	public SubBtnListener() {}
 
 
-
-	public SubBtnListener(JPanel jp, String text) {
+	public SubBtnListener(JPanel jp, String text,String loginid) {
+		
+		// TODO Auto-generated constructor stub
 		this.jp = jp;
 		this.text = text;
 		DbClass();
@@ -134,6 +135,8 @@ public class SubBtnListener extends JFrame {
 		}
 
 	}
+
+	
 
 	// 데이터 받아 넣기
 	public void re() {

@@ -74,9 +74,9 @@ public class LoginUi extends JFrame {
 		login.setSize(200, 30);
 		login.setLocation(840, 620);
 		if(ck.isSelected()) {
-		dialog = new ProjectDialog(this, "로그인 성공","관리자 모드");
+		dialog = new ProjectDialog(this, "로그인 성공","관리자 모드",loginTf.getText());
 		}else {
-			dialog = new ProjectDialog(this,"로그인 성공","작업자 모드");
+			dialog = new ProjectDialog(this,"로그인 성공","작업자 모드",loginTf.getText());
 		}
 		dbclass();
 
