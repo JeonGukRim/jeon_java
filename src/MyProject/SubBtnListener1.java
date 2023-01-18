@@ -214,7 +214,7 @@ public class SubBtnListener1 extends JFrame {
 							try {
 								
 								//입출고 이력에 실제 입고수량 날짜 작업자 id 저장
-								if(Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())) {
+								if(Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())&& !skuLocationTf.getText().equals("")) {
 								pstmtUpdate = l.conn.prepareStatement(
 										"update  iohistory set realnum = ?,complete = ?,worker_id = ?,work_date = ? where ordernum =?");
 								pstmtUpdate.setInt(1,Integer.parseInt(realinNumTf.getText()));
@@ -225,12 +225,12 @@ public class SubBtnListener1 extends JFrame {
 								pstmtUpdate.executeUpdate();
 								
 								}else {
-									JOptionPane.showMessageDialog(null, "실제 입고수량을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
+									JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
 								}
 								
 								
 								//리스트에 같은 제품과 재고위치에 재고가 존재한다면 재고 추가
-								if(Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())) {
+								if(Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())&& !skuLocationTf.getText().equals("")) {
 								rs=l.stmt.executeQuery
 								("select * from listdb  where sku_location = '"+skuLocationTf.getText()+"' and sku_code='"+
 								skuCodeJl.getText() +"'");
