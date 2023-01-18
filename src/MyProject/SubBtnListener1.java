@@ -31,8 +31,8 @@ public class SubBtnListener1 extends JFrame {
 	private JPanel centerP = new JPanel(); //
 	private JPanel southP = new JPanel(); //
 
-	private Connection conn;
-	private Statement stmt = null;
+//	private Connection conn;
+//	private Statement stmt = null;
 	private ResultSet rs = null;
 	private String text = null;
 //	// 테이블에 조회될 데이터
@@ -75,17 +75,18 @@ public class SubBtnListener1 extends JFrame {
 	private JTextField skuLocationTf = new JTextField(20);
 	private JButton inBtn = new JButton("입고완료");
 	private String loginid;
+	private LoginUi l;
 	
 	public SubBtnListener1() {}
-	public SubBtnListener1(JPanel mainP, String text,String loginid) {
+	public SubBtnListener1(JPanel mainP, String text,String loginid,JFrame frame) {
 		this.mainP = mainP;
 		this.text = text;
 		this.loginid = loginid;
-		
+		l =(LoginUi)frame;
 		mainP.setLayout(new BorderLayout());
 		LocalDateTime now = LocalDateTime.now();
 		formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-		DbClass();
+//		DbClass();
 		/*-------------------------------------------------------------------------------------------*/
 		if (text.equals("발주서 생성")) {
 			mainP.removeAll();
@@ -96,7 +97,7 @@ public class SubBtnListener1 extends JFrame {
 					// TODO Auto-generated method stub
 					JTextField t = (JTextField) e.getSource();
 					try {
-						rs = stmt.executeQuery("select * from productlist where sku_code ='" + t.getText() + "';");
+						rs = l.stmt.executeQuery("select * from productlist where sku_code ='" + t.getText() + "';");
 						if (rs.isBeforeFirst()) { // 데이터가 존재하면 true를 반환해줌
 							while (rs.next()) {
 								skuNamedata.setText(rs.getString("sku_name"));
@@ -163,7 +164,7 @@ public class SubBtnListener1 extends JFrame {
 					// TODO Auto-generated method stub
 					if (orderCombo != null) {
 						try {
-							ResultSet rs = stmt.executeQuery("select * from iohistory where ordernum ='"
+							ResultSet rs = l.stmt.executeQuery("select * from iohistory where ordernum ='"
 									+ orderCombo.getSelectedItem().toString() + "'");
 							while (rs.next()) {
 								skuCodeJl.setText(rs.getString("sku_code"));
@@ -183,7 +184,7 @@ public class SubBtnListener1 extends JFrame {
 						public void actionPerformed(ActionEvent e) {
 							// TODO Auto-generated method stub
 							try {
-								ResultSet rs = stmt.executeQuery
+								ResultSet rs = l.stmt.executeQuery
 										("select * from locationdb  where sku_location = '"+skuLocationTf.getText()+"'");
 								if(!rs.isBeforeFirst()) {
 									JOptionPane.showMessageDialog(null, "존재하지 않는 재고위치입니다", "입력오류", 1);
@@ -209,7 +210,7 @@ public class SubBtnListener1 extends JFrame {
 							formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분"));
 							try {
 								if(Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())) {
-								pstmtInsert = conn.prepareStatement(
+								pstmtInsert = l.conn.prepareStatement(
 										"insert into iohistory(realnum,complete,worker_id,work_date) values( ?,? ,"
 												+ "? ,?)");
 								pstmtInsert.setString(1,realinNumTf.getText());
@@ -221,11 +222,11 @@ public class SubBtnListener1 extends JFrame {
 								}else {
 									JOptionPane.showMessageDialog(null, "실제 입고수량을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
 								}
-								rs=stmt.executeQuery
+								rs=l.stmt.executeQuery
 								("select * from listdb  where sku_location = '"+skuLocationTf.getText()+"' and sku_code='"+
 								skuCodeJl.getText() +"'");
 								if(rs.isBeforeFirst()) {
-									pstmtUpdate = conn.prepareStatement
+									pstmtUpdate = l.conn.prepareStatement
 											("update listdb set sku_finalnum = ? where sku_location = ? and sku_code = ?");
 									int num = rs.getInt("sku_finalnum")+Integer.parseInt(realinNumTf.getText());
 									pstmtUpdate.setInt(1, num);
@@ -326,7 +327,7 @@ public class SubBtnListener1 extends JFrame {
 	public void creatComboBox() {
 		Vector orderlist = new Vector<>();
 		try {
-			rs = stmt.executeQuery("select * from iohistory where complete ='yet' and oder_kind ='입고'");
+			rs = l.stmt.executeQuery("select * from iohistory where complete ='yet' and oder_kind ='입고'");
 			while (rs.next()) {
 				String orderNum = rs.getString("ordernum");
 				orderlist.add(orderNum);
@@ -339,23 +340,23 @@ public class SubBtnListener1 extends JFrame {
 	}
 
 	// db에 연결
-	public void DbClass() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver"); // MySQL 드라이버 로드
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/myproject", "root", "test123"); // JDBC 연결
-			stmt = conn.createStatement(); // SQL문 처리용 Statement 객체 생성
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로드 오류");
-		} catch (SQLException e1) {
-			System.out.println("실행오류");
-		}
-	}
+//	public void DbClass() {
+//		try {
+//			Class.forName("com.mysql.jdbc.Driver"); // MySQL 드라이버 로드
+//			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/myproject", "root", "test123"); // JDBC 연결
+//			stmt = conn.createStatement(); // SQL문 처리용 Statement 객체 생성
+//		} catch (ClassNotFoundException e) {
+//			System.out.println("드라이버 로드 오류");
+//		} catch (SQLException e1) {
+//			System.out.println("실행오류");
+//		}
+//	}
 
 	// 발주서 추가
 	public void creat(String sku, String name, String kind, int num, String order) {
 
 		try {
-			pstmtInsert = conn.prepareStatement(
+			pstmtInsert = l.conn.prepareStatement(
 					"insert into iohistory(sku_code,sku_name,sku_kind,ordernum,ex_num,oder_kind,complete) values( ?,? ,"
 							+ "? ,?,?,?,?)");
 			pstmtInsert.setString(1, sku);

@@ -38,8 +38,8 @@ public class LoginUi extends JFrame {
 	private ImageIcon image3 = new ImageIcon("images/check1.png");
 	private ProjectDialog dialog;
 
-	private Connection conn;
-	private Statement stmt = null;
+	static Connection conn;
+	static Statement stmt = null;
 	private ResultSet rs = null;
 
 	public LoginUi() {

@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -32,14 +34,17 @@ public class ProjectDialog extends JDialog {
 	private static boolean expand3 = false;
 	private static boolean expand4 = false;
 	private String loginid;
+	public JFrame frame;
 	public ProjectDialog() {}
 	public ProjectDialog(JFrame frame, String title,String mode,String loginid) {
 		super(frame, title, true);
 		this.loginid = loginid;
+		this.frame = frame;
 		for (int i = 0; i < subBtn.length; i++) {
 			subBtn[i] = new JButton(btnname[i]);
 			subBtn[i].setBackground(Color.white);
 		}
+		
 		modeJl = new JLabel(mode);
 		modeJl.setFont(new Font("맑은 고딕",Font.BOLD,30));
 		modeJl.setSize(300,200);
@@ -97,7 +102,6 @@ public class ProjectDialog extends JDialog {
 		subMenuContainer = new JPanel();
 		subMenuContainer.setSize(900, 500);
 		subMenuContainer.setLocation(350, 200);
-//		subMenuContainer.setBackground(new Color(50, 220, 71));
 
 		add(menuL);
 		add(new textPanel());
@@ -111,35 +115,37 @@ public class ProjectDialog extends JDialog {
 			for (int i = 0; i < subBtn.length; i++) {
 				if (subBtn[i] == e.getSource()) {
 					if (i == 0) {
-						new SubBtnListener(subMenuContainer, "재고현황조회",loginid);
+						new SubBtnListener(subMenuContainer, "재고현황조회",loginid,frame );
 						getContentPane().add(subMenuContainer);
 
 					} else if (i == 1) {
-						new SubBtnListener(subMenuContainer, "검색",loginid);
+						new SubBtnListener(subMenuContainer, "검색",loginid,frame );
 						getContentPane().add(subMenuContainer);
 					} else if (i == 2) {
-						new SubBtnListener(subMenuContainer, "입출고 이력조회",loginid);
+						new SubBtnListener(subMenuContainer, "입출고 이력조회",loginid,frame );
 						getContentPane().add(subMenuContainer);
-					} else if (i == 3) {
-						new SubBtnListener1(subMenuContainer, "발주서 생성",loginid);
+					} 
+					else if (i == 3) {
+						new SubBtnListener1(subMenuContainer, "발주서 생성",loginid,frame );
 						getContentPane().add(subMenuContainer);
 					} else if (i == 4) {
-						new SubBtnListener1(subMenuContainer, "입고",loginid);
+						new SubBtnListener1(subMenuContainer, "입고",loginid,frame );
 						getContentPane().add(subMenuContainer);
 					} else if (i == 5) {
-						new SubBtnListener1(subMenuContainer, "Location정보",loginid);
+						new SubBtnListener1(subMenuContainer, "Location정보",loginid,frame );
 						getContentPane().add(subMenuContainer);
-					} else if (i == 6) {
-						new SubBtnListener(subMenuContainer, "출고오더생성",loginid);
+					}
+				else if (i == 6) {
+						new SubBtnListener(subMenuContainer, "출고오더생성",loginid,frame );
 						getContentPane().add(subMenuContainer);
 					} else if (i == 7) {
-						new SubBtnListener(subMenuContainer, "재고이동",loginid);
+						new SubBtnListener(subMenuContainer, "재고이동",loginid,frame );
 						getContentPane().add(subMenuContainer);
 					} else if (i == 8) {
-						new SubBtnListener(subMenuContainer, "상품정보조회",loginid);
+						new SubBtnListener(subMenuContainer, "상품정보조회",loginid,frame );
 						getContentPane().add(subMenuContainer);
 					} else {
-						new SubBtnListener(subMenuContainer, "ID정보관리",loginid);
+						new SubBtnListener(subMenuContainer, "ID정보관리",loginid,frame );
 						getContentPane().add(subMenuContainer);
 					}
 				}
@@ -311,9 +317,6 @@ public class ProjectDialog extends JDialog {
 		}
 	}
 
-	public static void main(String[] args) {
-//	 new ProjectDialog();
-	}
 }
 
 class textPanel extends JPanel {
@@ -321,7 +324,6 @@ class textPanel extends JPanel {
 		setSize(900, 100);
 		setLocation(380, 5);
 	}
-
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setColor(new Color(132, 203, 52));

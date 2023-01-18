@@ -22,8 +22,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class SubBtnListener extends JFrame {
 	private JPanel jp = new JPanel();
-	private Connection conn;
-	private Statement stmt = null;
+//	private Connection conn;
+//	private Statement stmt = null;
 	private ResultSet rs = null;
 	private String text = null;
 	// 테이블에 조회될 데이터
@@ -50,7 +50,7 @@ public class SubBtnListener extends JFrame {
 	private JTextField memoupTf = new JTextField(20);
 	private JPanel upPanel = new JPanel();
 	private PreparedStatement pstmtUpdate = null;
-	
+	private LoginUi l;
 	//입출고 내역 필요 객체 선언;
 	
 	
@@ -59,14 +59,12 @@ public class SubBtnListener extends JFrame {
 	
 	
 	public SubBtnListener() {}
-
-
-	public SubBtnListener(JPanel jp, String text,String loginid) {
-		
+	public SubBtnListener(JPanel jp, String text,String loginid,JFrame frame) {
 		// TODO Auto-generated constructor stub
 		this.jp = jp;
 		this.text = text;
-		DbClass();
+//		DbClass();
+		l =(LoginUi) frame;
 		jp.setLayout(new BorderLayout());
 		title = new Vector<>();
 		data = new Vector<>();
@@ -83,7 +81,7 @@ public class SubBtnListener extends JFrame {
 			upPanel.add(memoupJl);
 			upPanel.add(memoupTf);
 			upPanel.add(memoupBtn);
-//			jp.add(upPanel, BorderLayout.SOUTH);
+			
 			// 조회된 내역에서 메모 내역 수정 버튼
 			memoupBtn.addActionListener(new ActionListener() {
 				@Override
@@ -106,7 +104,6 @@ public class SubBtnListener extends JFrame {
 				result = null;
 			} else if (text.equals("검색")) {
 				jp.removeAll();
-//				result = allData();
 				re();
 				model.setDataVector(null, title);
 				table = new JTable(model);
@@ -145,7 +142,7 @@ public class SubBtnListener extends JFrame {
 
 	private void update(String code, String memo) {
 		try {
-			pstmtUpdate = conn.prepareStatement("update listdb set memo = ? where sku_code = ?");
+			pstmtUpdate = l.conn.prepareStatement("update listdb set memo = ? where sku_code = ?");
 			pstmtUpdate.setString(1, memo);
 			pstmtUpdate.setString(2, code);
 			pstmtUpdate.executeUpdate();
@@ -157,26 +154,26 @@ public class SubBtnListener extends JFrame {
 	}
 
 	// 데이터 베이서 연결
-	public void DbClass() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver"); // MySQL 드라이버 로드
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/myproject", "root", "test123"); // JDBC 연결
-			stmt = conn.createStatement(); // SQL문 처리용 Statement 객체 생성
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로드 오류");
-		} catch (SQLException e1) {
-			System.out.println("실행오류");
-		}
-	}
+//	public void DbClass() {
+//		try {
+//			Class.forName("com.mysql.jdbc.Driver"); // MySQL 드라이버 로드
+//			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/myproject", "root", "test123"); // JDBC 연결
+//			stmt = conn.createStatement(); // SQL문 처리용 Statement 객체 생성
+//		} catch (ClassNotFoundException e) {
+//			System.out.println("드라이버 로드 오류");
+//		} catch (SQLException e1) {
+//			System.out.println("실행오류");
+//		}
+//	}
 
 	// 모든 데이터 조회
 	public Vector allData() {
 		data.clear();
 		try {
 			if (text.equals("재고현황조회")) {
-				rs = stmt.executeQuery("select * from listdb order by sku_code");
+				rs =l.stmt.executeQuery("select * from listdb order by sku_code");
 			} else if (text.equals("검색")) {
-				rs = stmt.executeQuery("select * from listdb where" + " sku_code = '" + searchTf1.getText() + "' or"
+				rs = l.stmt.executeQuery("select * from listdb where" + " sku_code = '" + searchTf1.getText() + "' or"
 						+ " sku_name = '" + searchTf2.getText() + "';");
 			}
 
