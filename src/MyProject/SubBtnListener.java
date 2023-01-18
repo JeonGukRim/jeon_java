@@ -62,9 +62,6 @@ public class SubBtnListener extends JFrame {
 
 
 
-//	{ "재고현황조회", "검색", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "재고이동", "상품정보조회",
-//	"ID정보관리" };
-//	SubBtnListener(){}
 	public SubBtnListener(JPanel jp, String text) {
 		this.jp = jp;
 		this.text = text;
