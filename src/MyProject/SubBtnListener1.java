@@ -70,7 +70,7 @@ public class SubBtnListener1 extends JFrame {
 	private JLabel skuCodeJl = new JLabel();
 	private JLabel indata = new JLabel();
 	private JTextField realinNumTf = new JTextField(20);
-	private JLabel skuLocation = new JLabel("재고위치:");
+	private JLabel skuLocation = new JLabel("재고위치:(Enter키로확인)");
 	private JTextField skuLocationTf = new JTextField(20);
 	private JButton inBtn = new JButton("입고완료");
 
@@ -228,23 +228,55 @@ public class SubBtnListener1 extends JFrame {
 							skuNamedata.setText(rs.getString("sku_name"));
 							kinddata.setText(rs.getString("sku_kind"));
 							indata.setText(rs.getString("ex_num"));
-
-						
-							
-							
-							
-							
-							
-							
-							
-						
 						}
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-
 				}
+				
+				// 재고위치 정보 존재여부 판단
+				skuLocationTf.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						try {
+							ResultSet rs = stmt.executeQuery
+									("select * from locationdb  where sku_location = '"+skuLocationTf.getText()+"'");
+							if(!rs.isBeforeFirst()) {
+								JOptionPane.showMessageDialog(null, "존재하지 않는 재고위치입니다", "입력오류", 1);
+								skuLocationTf.setText("");
+							}else {
+								JOptionPane.showMessageDialog(null, "확인되였습니다", "OK", 1);
+							}
+						
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				});	
+				//입고 완료후 실제 입고수량,입고날짜 작업자 id 기록
+				inBtn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+//						loginTf.getText();
+						
+						try {
+//							pstmtInsert = conn.prepareStatement(
+//									"insert into iohistory(sku_code,sku_name,sku_kind,ordernum,ex_num,oder_kind,complete) values( ?,? ,"
+//											+ "? ,?,?,?,?)");
+//							pstmtInsert.setString(1,);
+							pstmtInsert.executeUpdate();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				});
+				
+				
 			}
 		});
 	}
