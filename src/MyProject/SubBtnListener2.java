@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -64,6 +65,8 @@ public class SubBtnListener2 extends JFrame {
 	private JButton creatBtn = new JButton("생성");
 	private JButton upBtn = new JButton("새로고침");
 	private Boolean exp = true;
+////////////////////////////////////출고//////////////////////////////////////
+	
 
 	public SubBtnListener2(JPanel mainP, String text, String loginid, JFrame frame) {
 		this.mainP = mainP;
@@ -118,15 +121,24 @@ public class SubBtnListener2 extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					int num = 0;
-					try {
-						rs = l.stmt.executeQuery("select * from listdb where sku_code ='" + codeTf.getText()
-								+ "' and sku_location = '" + locationdata.getText() + "'");
-						while (rs.next()) {
-							num = rs.getInt("sku_finalnum");
+
+					if (outnumTf.getText().length() != 0) {
+						try {
+							rs = l.stmt.executeQuery("select * from listdb where sku_code ='" + codeTf.getText()
+									+ "' and sku_location = '" + locationdata.getText() + "'");
+							while (rs.next()) {
+								num = rs.getInt("sku_finalnum");
+							}
+
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-						if (Integer.parseInt(outnumTf.getText()) > num || outnumTf.getText().length() == 0 ) {
+
+						if (Integer.parseInt(outnumTf.getText()) > num || outnumTf.getText().length() == 0) {
 							JOptionPane.showMessageDialog(null, "출고가능 수량을 확인해주세요", "알림", JOptionPane.ERROR_MESSAGE);
 						} else {
+
 							if (exp == false && outnumTf.getText().length() != 0) {
 								creat(codeTf.getText(), skuNamedata.getText(), kinddata.getText(),
 										Integer.parseInt(outnumTf.getText()), ordernum.getText());
@@ -143,11 +155,7 @@ public class SubBtnListener2 extends JFrame {
 							} else
 								JOptionPane.showMessageDialog(null, "입력정보를 확인해주세요", "알림", 1);
 						}
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
 					}
-
 				}
 			});
 
