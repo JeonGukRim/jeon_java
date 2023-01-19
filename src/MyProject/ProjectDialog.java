@@ -173,7 +173,7 @@ public class ProjectDialog extends JDialog {
 			}
 
 			if (menuBtn[0] == e.getSource()) {
-				expand = true;
+				expand = !expand;
 				expand1 = false;
 				expand2 = false;
 				expand3 = false;
@@ -186,7 +186,7 @@ public class ProjectDialog extends JDialog {
 
 			} else if (menuBtn[1] == e.getSource()) {
 				expand = false;
-				expand1 = true;
+				expand1 = !expand1;
 				expand2 = false;
 				expand3 = false;
 				expand4 = false;
@@ -198,7 +198,7 @@ public class ProjectDialog extends JDialog {
 			} else if (menuBtn[2] == e.getSource()) {
 				expand = false;
 				expand1 = false;
-				expand2 = true;
+				expand2 = !expand2;
 				expand3 = false;
 				expand4 = false;
 				wind1();
@@ -210,7 +210,7 @@ public class ProjectDialog extends JDialog {
 				expand = false;
 				expand1 = false;
 				expand2 = false;
-				expand3 = true;
+				expand3 = !expand3;
 				expand4 = false;
 				wind1();
 				wind2();
@@ -222,7 +222,7 @@ public class ProjectDialog extends JDialog {
 				expand1 = false;
 				expand2 = false;
 				expand3 = false;
-				expand4 = true;
+				expand4 = !expand4;
 				wind1();
 				wind2();
 				wind3();
@@ -249,7 +249,6 @@ public class ProjectDialog extends JDialog {
 			validate();
 			menuL.repaint();
 
-			expand = false;
 		} else {// 접힘
 			for (int i = 0; i < 3; i++) {
 				pNorth.remove(subBtn[i]);
@@ -257,7 +256,6 @@ public class ProjectDialog extends JDialog {
 			validate();
 			menuL.repaint();
 
-			expand = true;
 		}
 	}
 
@@ -275,14 +273,12 @@ public class ProjectDialog extends JDialog {
 			}
 			validate();
 			menuL.repaint();
-			expand1 = false;
 		} else {// 접힘
 			for (int i = 3; i < 6; i++) {
 				pNorth.remove(subBtn[i]);
 			}
 			validate();
 			menuL.repaint();
-			expand1 = true;
 		}
 	}
 
@@ -300,14 +296,12 @@ public class ProjectDialog extends JDialog {
 			}
 			validate();
 			menuL.repaint();
-			expand2 = false;
 		} else {// 접힘
 			for (int i = 6; i < 8; i++) {
 				pNorth.remove(subBtn[i]);
 			}
 			validate();
 			menuL.repaint();
-			expand2 = true;
 		}
 	}
 
@@ -318,12 +312,10 @@ public class ProjectDialog extends JDialog {
 			pNorth.add(menuBtn[4]);
 			validate();
 			menuL.repaint();
-			expand3 = false;
 		} else {// 접힘
 			pNorth.remove(subBtn[8]);
 			validate();
 			menuL.repaint();
-			expand3 = true;
 		}
 	}
 
@@ -332,12 +324,10 @@ public class ProjectDialog extends JDialog {
 			pNorth.add(subBtn[9]);
 			validate();
 			menuL.repaint();
-			expand4 = false;
 		} else {// 접힘
 			pNorth.remove(subBtn[9]);
 			validate();
 			menuL.repaint();
-			expand4 = true;
 		}
 	}
 
