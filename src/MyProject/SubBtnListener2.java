@@ -78,7 +78,6 @@ public class SubBtnListener2 extends JFrame {
 	private JLabel skuLocationData = new JLabel();
 	private JButton outBtn = new JButton("출고완료");
 
-//	private String lodata = null; // 출고오더 생성시 데이터 저장용도
 ////////////////////////////////////////////////////////////////////////////	
 	public SubBtnListener2(JPanel mainP, String text, String loginid, JFrame frame) {
 		this.mainP = mainP;
@@ -191,7 +190,7 @@ public class SubBtnListener2 extends JFrame {
 								skuCodeJl.setText(rs.getString("sku_code"));
 								skuNamedata.setText(rs.getString("sku_name"));
 								kinddata.setText(rs.getString("sku_kind"));
-//								locationdata.setText(rs.getString("sku_location");
+//		??????					locationdata.setText(rs.getString("sku_location");
 								outdata.setText("ex_num");
 							}
 						} catch (SQLException e1) {
@@ -207,35 +206,12 @@ public class SubBtnListener2 extends JFrame {
 							// TODO Auto-generated method stub
 							LocalDateTime now = LocalDateTime.now();
 							formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분"));
-//							try {
-//
-//								// 입출고 이력에 실제 입고수량 날짜 작업자 id 저장
-//								if (Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())
-//										&& !skuLocationTf.getText().equals("")) {
-//									pstmtUpdate = l.conn.prepareStatement(
-//											"update  iohistory set realnum = ?,complete = ?,worker_id = ?,work_date = ? where ordernum =?");
-//									pstmtUpdate.setInt(1, Integer.parseInt(realinNumTf.getText()));
-//									pstmtUpdate.setString(2, "over"); // 작업끝났으면 오버로 표시
-//									pstmtUpdate.setString(3, loginid);
-//									pstmtUpdate.setString(4, formatedNow);
-//									pstmtUpdate.setString(5, select);
-//									pstmtUpdate.executeUpdate();
-//
-//								} else {
-//									JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
-//								}
-//
-//							} catch (SQLException e1) {
-//								// TODO Auto-generated catch block
-//								e1.printStackTrace();
-//							}
 						}
 
 					});
 
 				}
 			});
-
 		}
 	}
 
