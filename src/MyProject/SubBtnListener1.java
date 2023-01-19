@@ -34,7 +34,12 @@ public class SubBtnListener1 extends JFrame {
 	private JPanel southP = new JPanel(); //
 	private ResultSet rs = null;
 	private String text = null;
-
+	private PreparedStatement pstmtInsert = null;
+	private PreparedStatement pstmtUpdate = null;
+	private PreparedStatement pstmtDelete = null;
+	private PreparedStatement pstmtDel = null;
+	private String formatedNow = null;
+	
 ////////////////////////////발주서 생성기능//////////////////////////////////////
 	private JLabel headname = new JLabel("발주서 생성");
 	private JLabel order = new JLabel("오더번호");
@@ -50,10 +55,7 @@ public class SubBtnListener1 extends JFrame {
 	private JButton creatBtn = new JButton("생성");
 	private JButton upBtn = new JButton("새로고침");
 	private Boolean exp = true;
-	private PreparedStatement pstmtInsert = null;
-	private PreparedStatement pstmtUpdate = null;
-	private PreparedStatement pstmtDelete = null;
-	private String formatedNow = null;
+
 //////////////////////////////////입고//////////////////////////////////////////
 	private JButton view = new JButton("조회");
 	private JComboBox<String> orderCombo;
@@ -75,7 +77,7 @@ public class SubBtnListener1 extends JFrame {
 	private JTable table = null;
 	private DefaultTableModel model = null;
 	private Vector result;
-	private PreparedStatement pstmtDel = null;
+	
 
 	private String loginid;
 	private LoginUi l;
@@ -131,7 +133,6 @@ public class SubBtnListener1 extends JFrame {
 					codeTf.setEditable(exp);
 				}
 			});
-
 			creatBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -155,7 +156,6 @@ public class SubBtnListener1 extends JFrame {
 						JOptionPane.showMessageDialog(null, "입력정보를 확인해주세요", "알림", 1);
 				}
 			});
-
 		}
 ////////////////////////////////////////입고//////////////////////////////////////////////
 		if (text.equals("입고")) {
@@ -327,7 +327,6 @@ public class SubBtnListener1 extends JFrame {
 		title.add("분류");
 		model.setDataVector(result, title);
 		table = new JTable(model);
-//		table.setEnabled(false);
 		JScrollPane sp = new JScrollPane(table);
 		testP.add(new JLabel("입고가능 제품리스트(더블 클릭)", JLabel.CENTER), BorderLayout.NORTH);
 		testP.add(sp, BorderLayout.WEST);
@@ -360,7 +359,6 @@ public class SubBtnListener1 extends JFrame {
 		
 		result = null;
 	}
-
 	public void locationSetting1() { // 입고 세팅
 		creatComboBox();
 		northP.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 0));
@@ -414,7 +412,6 @@ public class SubBtnListener1 extends JFrame {
 
 	// 모드 패널 리셋
 	public void resetP() {
-
 		mainP.removeAll();
 		northP.removeAll();
 		southP.removeAll();
@@ -426,7 +423,6 @@ public class SubBtnListener1 extends JFrame {
 		southP.repaint();
 		centerP.repaint();
 		testP.repaint();
-
 	}
 
 	public void creatComboBox() {
@@ -462,6 +458,9 @@ public class SubBtnListener1 extends JFrame {
 		return data;
 	}
 
+	
+
+	
 	public Vector searchData() { // 재고위치 정보 저장
 		data.clear();
 		try {
@@ -532,7 +531,6 @@ public class SubBtnListener1 extends JFrame {
 		}
 
 	}
-
 	public Vector allData() {
 		data.clear();
 		try {
