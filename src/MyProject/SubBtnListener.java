@@ -63,7 +63,6 @@ public class SubBtnListener extends JFrame {
 		// TODO Auto-generated constructor stub
 		this.jp = jp;
 		this.text = text;
-//		DbClass();
 		l =(LoginUi) frame;
 		jp.setLayout(new BorderLayout());
 		title = new Vector<>();
@@ -153,18 +152,6 @@ public class SubBtnListener extends JFrame {
 
 	}
 
-	// 데이터 베이서 연결
-//	public void DbClass() {
-//		try {
-//			Class.forName("com.mysql.jdbc.Driver"); // MySQL 드라이버 로드
-//			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/myproject", "root", "test123"); // JDBC 연결
-//			stmt = conn.createStatement(); // SQL문 처리용 Statement 객체 생성
-//		} catch (ClassNotFoundException e) {
-//			System.out.println("드라이버 로드 오류");
-//		} catch (SQLException e1) {
-//			System.out.println("실행오류");
-//		}
-//	}
 
 	// 모든 데이터 조회
 	public Vector allData() {
