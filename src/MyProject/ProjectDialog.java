@@ -173,7 +173,7 @@ public class ProjectDialog extends JDialog {
 			}
 
 			if (menuBtn[0] == e.getSource()) {
-
+				expand = true;
 				expand1 = false;
 				expand2 = false;
 				expand3 = false;
@@ -186,6 +186,7 @@ public class ProjectDialog extends JDialog {
 
 			} else if (menuBtn[1] == e.getSource()) {
 				expand = false;
+				expand1 = true;
 				expand2 = false;
 				expand3 = false;
 				expand4 = false;
@@ -197,6 +198,7 @@ public class ProjectDialog extends JDialog {
 			} else if (menuBtn[2] == e.getSource()) {
 				expand = false;
 				expand1 = false;
+				expand2 = true;
 				expand3 = false;
 				expand4 = false;
 				wind1();
@@ -208,6 +210,7 @@ public class ProjectDialog extends JDialog {
 				expand = false;
 				expand1 = false;
 				expand2 = false;
+				expand3 = true;
 				expand4 = false;
 				wind1();
 				wind2();
@@ -219,6 +222,7 @@ public class ProjectDialog extends JDialog {
 				expand1 = false;
 				expand2 = false;
 				expand3 = false;
+				expand4 = true;
 				wind1();
 				wind2();
 				wind3();
