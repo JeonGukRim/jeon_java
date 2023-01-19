@@ -2,7 +2,7 @@
 -- Query: SELECT * FROM myproject.listdb
 LIMIT 0, 1000
 
--- Date: 2023-01-18 18:18
+-- Date: 2023-01-19 16:56
 */
 INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`,`sku_location`,`sku_finalnum`,`memo`) VALUES ('k123','SK II ','화장품','A-4-2',250,'재고충족');
 INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`,`sku_location`,`sku_finalnum`,`memo`) VALUES ('k124','선크림','화장품','A-4-2',45,'재고 줘요');

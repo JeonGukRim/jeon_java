@@ -2,6 +2,7 @@ package MyProject;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -66,8 +68,18 @@ public class SubBtnListener2 extends JFrame {
 	private JButton upBtn = new JButton("새로고침");
 	private Boolean exp = true;
 ////////////////////////////////////출고//////////////////////////////////////
-	
+	private JButton view = new JButton("조회");
+	private JComboBox<String> orderCombo;
+	private JLabel realoutNumJl = new JLabel("실제 출고수량:");
+	private JLabel skuCodeJl = new JLabel();
+	private JLabel outdata = new JLabel();
+	private JTextField realoutNumTf = new JTextField(20);
+	private JLabel skuLocation = new JLabel("재고위치:");
+	private JLabel skuLocationData = new JLabel();
+	private JButton outBtn = new JButton("출고완료");
 
+//	private String lodata = null; // 출고오더 생성시 데이터 저장용도
+////////////////////////////////////////////////////////////////////////////	
 	public SubBtnListener2(JPanel mainP, String text, String loginid, JFrame frame) {
 		this.mainP = mainP;
 		this.text = text;
@@ -77,8 +89,9 @@ public class SubBtnListener2 extends JFrame {
 		LocalDateTime now = LocalDateTime.now();
 		formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
+////////////////////////////출고 오더 생성기능//////////////////////////////////////		
 		if (text.equals("출고오더생성")) {
-			mainP.removeAll();
+			resetP();
 			locationSetting1();
 			codeTf.addActionListener(new ActionListener() {
 				@Override
@@ -142,6 +155,7 @@ public class SubBtnListener2 extends JFrame {
 							if (exp == false && outnumTf.getText().length() != 0) {
 								creat(codeTf.getText(), skuNamedata.getText(), kinddata.getText(),
 										Integer.parseInt(outnumTf.getText()), ordernum.getText());
+//								lodata =locationdata.getText();
 								resetF();
 								exp = true;
 								codeTf.setText("");
@@ -158,11 +172,74 @@ public class SubBtnListener2 extends JFrame {
 					}
 				}
 			});
-
 		}
 
+////////////////////////////////////출고//////////////////////////////////////		
+		if (text.equals("출고")) {
+			resetP();
+			locationSetting2();
+			view.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					String select = orderCombo.getSelectedItem().toString();
+					if (orderCombo != null) {
+						try {
+							ResultSet rs = l.stmt
+									.executeQuery("select * from iohistory where ordernum ='" + select + "'");
+							while (rs.next()) {
+								skuCodeJl.setText(rs.getString("sku_code"));
+								skuNamedata.setText(rs.getString("sku_name"));
+								kinddata.setText(rs.getString("sku_kind"));
+//								locationdata.setText(rs.getString("sku_location");
+								outdata.setText("ex_num");
+							}
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+
+					// 출고완료 저장
+					outBtn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+							LocalDateTime now = LocalDateTime.now();
+							formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분"));
+//							try {
+//
+//								// 입출고 이력에 실제 입고수량 날짜 작업자 id 저장
+//								if (Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())
+//										&& !skuLocationTf.getText().equals("")) {
+//									pstmtUpdate = l.conn.prepareStatement(
+//											"update  iohistory set realnum = ?,complete = ?,worker_id = ?,work_date = ? where ordernum =?");
+//									pstmtUpdate.setInt(1, Integer.parseInt(realinNumTf.getText()));
+//									pstmtUpdate.setString(2, "over"); // 작업끝났으면 오버로 표시
+//									pstmtUpdate.setString(3, loginid);
+//									pstmtUpdate.setString(4, formatedNow);
+//									pstmtUpdate.setString(5, select);
+//									pstmtUpdate.executeUpdate();
+//
+//								} else {
+//									JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
+//								}
+//
+//							} catch (SQLException e1) {
+//								// TODO Auto-generated catch block
+//								e1.printStackTrace();
+//							}
+						}
+
+					});
+
+				}
+			});
+
+		}
 	}
 
+///////////////////////////////////메소드//////////////////////////////////////	
 	public void locationSetting1() {
 		ordernum = new JLabel("OP" + formatedNow);
 		headname.setFont(new Font("맑은 고딕", Font.BOLD, 30));
@@ -233,6 +310,42 @@ public class SubBtnListener2 extends JFrame {
 		result = null;
 	}
 
+	public void locationSetting2() {
+		/*
+		 * private JButton view = new JButton("조회"); private JComboBox<String>
+		 * orderCombo; private JLabel realoutNumJl = new JLabel("실제 출고수량:"); private
+		 * JLabel skuCodeJl = new JLabel(); private JLabel outdata = new JLabel();
+		 * private JTextField realoutNumTf = new JTextField(20); private JLabel
+		 * skuLocation = new JLabel("재고위치:"); private JLabel skuLocationData = new
+		 * JLabel(); private JButton outBtn = new JButton("출고완료");
+		 */
+		creatComboBox();
+		northP.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 0));
+		northP.add(order);
+		northP.add(orderCombo);
+		northP.add(view);
+		mainP.add(northP, BorderLayout.NORTH);
+
+		testP.setLayout(new GridLayout(6, 2, 40, 40));
+		testP.add(skuCode);
+		testP.add(skuCodeJl);
+		testP.add(skuName);
+		testP.add(skuNamedata);
+		testP.add(kind);
+		testP.add(kinddata);
+		testP.add(skuLocation);
+		testP.add(skuLocationData);
+		testP.add(finalNum);
+		testP.add(finalNumdata);
+		testP.add(realoutNumJl);
+		testP.add(realoutNumTf);
+		centerP.add(testP, BorderLayout.NORTH);
+		mainP.add(centerP, BorderLayout.CENTER);
+
+		southP.add(outBtn);
+		mainP.add(southP, BorderLayout.SOUTH);
+	}
+
 	public void resetP() {
 		mainP.removeAll();
 		northP.removeAll();
@@ -253,6 +366,7 @@ public class SubBtnListener2 extends JFrame {
 		kinddata.setText("");
 		locationdata.setText("");
 		finalNumdata.setText("");
+		outdata.setText("");
 	}
 
 	public Vector allData() {
@@ -301,6 +415,20 @@ public class SubBtnListener2 extends JFrame {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void creatComboBox() {
+		Vector orderlist = new Vector<>();
+		try {
+			rs = l.stmt.executeQuery("select * from iohistory where complete ='yet' and oder_kind ='출고'");
+			while (rs.next()) {
+				String orderNum = rs.getString("ordernum");
+				orderlist.add(orderNum);
+			}
+			orderCombo = new JComboBox<String>(orderlist);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
