@@ -156,10 +156,10 @@ public class ProjectDialog extends JDialog {
 						getContentPane().add(subMenuContainer);
 					}
 				else if (i == 6) {
-						new SubBtnListener(subMenuContainer, "출고오더생성",loginid,frame );
+						new SubBtnListener2(subMenuContainer, "출고오더생성",loginid,frame );
 						getContentPane().add(subMenuContainer);
 					} else if (i == 7) {
-						new SubBtnListener(subMenuContainer, "재고이동",loginid,frame );
+						new SubBtnListener2(subMenuContainer, "출고",loginid,frame );
 						getContentPane().add(subMenuContainer);
 					} else if (i == 8) {
 						new SubBtnListener(subMenuContainer, "상품정보조회",loginid,frame );

@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,7 +64,8 @@ public class SubBtnListener1 extends JFrame {
 	private JLabel skuLocation = new JLabel("재고위치:(Enter키로확인)");
 	private JTextField skuLocationTf = new JTextField(20);
 	private JButton inBtn = new JButton("입고완료");
-///////////////////////////Location정보///////////////////////////////////////
+
+	/////////////////////////// Location정보///////////////////////////////////////
 	private JButton addBtn = new JButton("추가");
 	private JTextField loTf = new JTextField(20);
 	private JButton delBtn = new JButton("삭제");
@@ -314,11 +317,48 @@ public class SubBtnListener1 extends JFrame {
 		centerP.add(kinddata);
 		centerP.add(innum);
 		centerP.add(inTf);
-		testP.add(centerP, BorderLayout.NORTH);
+
+		title = new Vector<>();
+		data = new Vector<>();
+		model = new DefaultTableModel();
+		result = allData();
+		title.add("SKU번호");
+		title.add("제품명");
+		title.add("분류");
+		model.setDataVector(result, title);
+		table = new JTable(model);
+//		table.setEnabled(false);
+		JScrollPane sp = new JScrollPane(table);
+		testP.add(new JLabel("입고가능 제품리스트(더블 클릭)", JLabel.CENTER), BorderLayout.NORTH);
+		testP.add(sp, BorderLayout.WEST);
 		southP.add(creatBtn);
 		southP.add(upBtn);
 		mainP.add(testP, BorderLayout.CENTER);
+		mainP.add(centerP, BorderLayout.WEST);
 		mainP.add(southP, BorderLayout.SOUTH);
+		// 클릭하여 데이터 가져 오기
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//마우스 더블 클릭하면 데이터 전송
+				
+				if (e.getClickCount() == 2 && exp == true) {
+					int index = table.getSelectedRow();
+					Vector in = (Vector) data.get(index);
+					String sku_code = (String) in.get(0);
+					String sku_name = (String) in.get(1);
+					String sku_kind = (String) in.get(2);
+					codeTf.setText(sku_code);
+					skuNamedata.setText(sku_name);
+					kinddata.setText(sku_kind);
+					exp = false;
+					codeTf.setEditable(exp);
+				}
+			}
+		});
+		
+		
+		result = null;
 	}
 
 	public void locationSetting1() { // 입고 세팅
@@ -467,32 +507,50 @@ public class SubBtnListener1 extends JFrame {
 	public void delData() {
 		try {
 			rs = l.stmt.executeQuery("select * from listdb where sku_location = '" + loTf.getText() + "'");
-			if(rs.isBeforeFirst()) {
-				JOptionPane.showMessageDialog(null, "현재 사용중인 재고위치입니다", "알림", JOptionPane.ERROR_MESSAGE);
-			}
-		else {
-			rs = l.stmt.executeQuery("select * from locationdb where sku_location = '" + loTf.getText() + "'");
 			if (rs.isBeforeFirst()) {
-				pstmtDelete = l.conn.prepareStatement("delete from locationdb where sku_location = ?");
-				pstmtDelete.setString(1, loTf.getText());
-				pstmtDelete.executeUpdate();
-				loTf.setText("");
-				JOptionPane.showMessageDialog(null, "삭제가 되였습니다", "알림", 1);
-				result = getData();
-				model.setDataVector(result, title);
-				result = null;
+				JOptionPane.showMessageDialog(null, "현재 사용중인 재고위치입니다", "알림", JOptionPane.ERROR_MESSAGE);
 			} else {
-				JOptionPane.showMessageDialog(null, "삭제할 내용이 존재하지 않습니다", "알림", JOptionPane.ERROR_MESSAGE);
+				rs = l.stmt.executeQuery("select * from locationdb where sku_location = '" + loTf.getText() + "'");
+				if (rs.isBeforeFirst()) {
+					pstmtDelete = l.conn.prepareStatement("delete from locationdb where sku_location = ?");
+					pstmtDelete.setString(1, loTf.getText());
+					pstmtDelete.executeUpdate();
+					loTf.setText("");
+					JOptionPane.showMessageDialog(null, "삭제가 되였습니다", "알림", 1);
+					result = getData();
+					model.setDataVector(result, title);
+					result = null;
+				} else {
+					JOptionPane.showMessageDialog(null, "삭제할 내용이 존재하지 않습니다", "알림", JOptionPane.ERROR_MESSAGE);
+				}
+
 			}
-			
-		}
-			
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+	}
+
+	public Vector allData() {
+		data.clear();
+		try {
+			rs = l.stmt.executeQuery("select * from productlist order by sku_code");
+			while (rs.next()) {
+				Vector in = new Vector<String>(); //
+				String sku_code = rs.getString("sku_code");
+				String sku_name = rs.getString("sku_name");
+				String sku_kind = rs.getString("sku_kind");
+				in.add(sku_code);
+				in.add(sku_name);
+				in.add(sku_kind);
+				data.add(in);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
 	private class btnAction implements ActionListener {
