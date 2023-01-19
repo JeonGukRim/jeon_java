@@ -22,7 +22,6 @@ public class testststst extends JFrame {
 	static Connection conn;
 	static Statement stmt = null;
 	private ResultSet rs = null;
-	private int num = 0;
 	testststst() {
 		tf.setText("3");
 //		tf.setEditable(false);
@@ -37,24 +36,44 @@ public class testststst extends JFrame {
 		setSize(400, 400);
 		setVisible(true);
 		 dbclass();
-		 tf.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				try {
-					rs=stmt.executeQuery
-							("select * from listdb  where sku_location = 'A-4-2' and sku_code='k123'");
-//					 num = Integer.parseInt(tf.getText());
-						num=rs.getInt("sku_finalnum");
-					 
-					 System.out.println(num);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+		 try {
+				rs=stmt.executeQuery("select * from listdb");
+//						("select * from listdb  where sku_location = 'A-4-2' and sku_code='k123'");
+//				 num = Integer.parseInt(tf.getText());
+				String num1=null;
+				String num =null;
+				while(rs.next()) {	
+				num=rs.getString("sku_finalnum");
+				num1 =rs.getString("sku_location");
 				}
+				 System.out.println(num);
+				 System.out.println(num1);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-		});
+//		 tf.addActionListener(new ActionListener() {
+//			
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// TODO Auto-generated method stub
+//				try {
+//					rs=stmt.executeQuery("select * from listdb where sku_location = 'A-4-1'");
+////							("select * from listdb  where sku_location = 'A-4-2' and sku_code='k123'");
+////					 num = Integer.parseInt(tf.getText());
+//					String num1=null;
+//					while(rs.next()) {	
+//					num=rs.getInt("sku_finalnum");
+//						 num1 =rs.getString("sku_location");
+//					}
+//					 System.out.println(num);
+//					 System.out.println(num1);
+//				} catch (SQLException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//			}
+//		});
 		
 		
 		

@@ -1,6 +1,7 @@
 package MyProject;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -328,6 +329,7 @@ public class SubBtnListener1 extends JFrame {
 		model.setDataVector(result, title);
 		table = new JTable(model);
 		JScrollPane sp = new JScrollPane(table);
+		sp.setPreferredSize(new Dimension(300,200));
 		testP.add(new JLabel("입고가능 제품리스트(더블 클릭)", JLabel.CENTER), BorderLayout.NORTH);
 		testP.add(sp, BorderLayout.WEST);
 		southP.add(creatBtn);

@@ -1,6 +1,7 @@
 package MyProject;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -52,6 +53,8 @@ public class SubBtnListener2 extends JFrame {
 	private JTextField codeTf = new JTextField(20);
 	private JLabel skuName = new JLabel("제품명:");
 	private JLabel skuNamedata = new JLabel();
+	private JLabel kind = new JLabel("분류:");
+	private JLabel kinddata = new JLabel();
 	private JLabel sku_location = new JLabel("재고위치:");
 	private JLabel locationdata = new JLabel();
 	private JLabel finalNum = new JLabel("출고 가능 수량:");
@@ -70,7 +73,7 @@ public class SubBtnListener2 extends JFrame {
 		mainP.setLayout(new BorderLayout());
 		LocalDateTime now = LocalDateTime.now();
 		formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-		
+
 		if (text.equals("출고오더생성")) {
 			mainP.removeAll();
 			locationSetting1();
@@ -80,19 +83,18 @@ public class SubBtnListener2 extends JFrame {
 					// TODO Auto-generated method stub
 					JTextField t = (JTextField) e.getSource();
 					try {
-						rs = l.stmt.executeQuery("select * from productlist where sku_code ='" + t.getText() + "';");
+						rs = l.stmt.executeQuery("select * from listdb where sku_code ='" + t.getText() + "';");
 						if (rs.isBeforeFirst()) { // 데이터가 존재하면 true를 반환해줌
 							while (rs.next()) {
 								skuNamedata.setText(rs.getString("sku_name"));
-								outnumTf.setText(rs.getString("sku_finalnum"));
+								kinddata.setText(rs.getString("sku_kind"));
+								finalNumdata.setText(rs.getString("sku_finalnum"));
 								locationdata.setText(rs.getString("sku_location"));
 							}
 							exp = false;
 							t.setEditable(exp);
 						} else {
-							skuNamedata.setText("");
-							outnumTf.setText("");
-							locationdata.setText("");
+							resetF();
 							JOptionPane.showMessageDialog(null, "존재하지 않는 코드 입니다\n코드를 새로 생성후 진행하세요!", "입력오류", 1);
 						}
 					} catch (SQLException e1) {
@@ -101,33 +103,63 @@ public class SubBtnListener2 extends JFrame {
 					}
 				}
 			});
-	
-		
-			
-		
-		
+			upBtn.addActionListener(new ActionListener() {
+				// 새로고침
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					exp = true;
+					resetF();
+					codeTf.setEditable(exp);
+				}
+			});
+			creatBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					int num = 0;
+					try {
+						rs = l.stmt.executeQuery("select * from listdb where sku_code ='" + codeTf.getText()
+								+ "' and sku_location = '" + locationdata.getText() + "'");
+						while (rs.next()) {
+							num = rs.getInt("sku_finalnum");
+						}
+						if (Integer.parseInt(outnumTf.getText()) > num || outnumTf.getText().length() == 0 ) {
+							JOptionPane.showMessageDialog(null, "출고가능 수량을 확인해주세요", "알림", JOptionPane.ERROR_MESSAGE);
+						} else {
+							if (exp == false && outnumTf.getText().length() != 0) {
+								creat(codeTf.getText(), skuNamedata.getText(), kinddata.getText(),
+										Integer.parseInt(outnumTf.getText()), ordernum.getText());
+								resetF();
+								exp = true;
+								codeTf.setText("");
+								codeTf.setEditable(exp);
+
+								// 발주내역 추가후 새로운 오더번호 받기
+								LocalDateTime now = LocalDateTime.now();
+								formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+								ordernum.setText("IO" + formatedNow);
+								JOptionPane.showMessageDialog(null, "발주신청이 생성되였습니다", "알림", 1);
+							} else
+								JOptionPane.showMessageDialog(null, "입력정보를 확인해주세요", "알림", 1);
+						}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+				}
+			});
+
 		}
-		
-		
-		
-		
-		
-		
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	public void locationSetting1() {
 		ordernum = new JLabel("OP" + formatedNow);
 		headname.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		mainP.add(headname, BorderLayout.NORTH);
-		centerP.setLayout(new GridLayout(6, 2));
+		centerP.setLayout(new GridLayout(7, 2));
 		order.setFont(new Font("맑은 고딕", Font.BOLD, 25));
 		ordernum.setFont(new Font("맑은 고딕", Font.BOLD, 25));
 		centerP.add(order, ordernum);
@@ -136,6 +168,8 @@ public class SubBtnListener2 extends JFrame {
 		centerP.add(codeTf);
 		centerP.add(skuName);
 		centerP.add(skuNamedata);
+		centerP.add(kind);
+		centerP.add(kinddata);
 		centerP.add(sku_location);
 		centerP.add(locationdata);
 		centerP.add(finalNum);
@@ -156,6 +190,7 @@ public class SubBtnListener2 extends JFrame {
 		model.setDataVector(result, title);
 		table = new JTable(model);
 		JScrollPane sp = new JScrollPane(table);
+		sp.setPreferredSize(new Dimension(400, 200));
 		testP.add(new JLabel("출고가능 제품리스트(더블 클릭)", JLabel.CENTER), BorderLayout.NORTH);
 		testP.add(sp, BorderLayout.WEST);
 		southP.add(creatBtn);
@@ -163,28 +198,31 @@ public class SubBtnListener2 extends JFrame {
 		mainP.add(testP, BorderLayout.CENTER);
 		mainP.add(centerP, BorderLayout.WEST);
 		mainP.add(southP, BorderLayout.SOUTH);
+
 		// 클릭하여 데이터 가져 오기
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//마우스 더블 클릭하면 데이터 전송
+				// 마우스 더블 클릭하면 데이터 전송
 				if (e.getClickCount() == 2 && exp == true) {
 					int index = table.getSelectedRow();
 					Vector in = (Vector) data.get(index);
 					String sku_code = (String) in.get(0);
 					String sku_name = (String) in.get(1);
+					String sku_kind = (String) in.get(2);
 					String sku_location = (String) in.get(3);
-					String sku_finalnum = (String) in.get(4);
+					int sku_finalnum = (int) in.get(4);
 					codeTf.setText(sku_code);
 					skuNamedata.setText(sku_name);
+					kinddata.setText(sku_kind);
 					locationdata.setText(sku_location);
-					finalNumdata.setText(sku_finalnum);
+					finalNumdata.setText(sku_finalnum + "");
 					exp = false;
 					codeTf.setEditable(exp);
 				}
 			}
 		});
-		result = null;	
+		result = null;
 	}
 
 	public void resetP() {
@@ -201,10 +239,18 @@ public class SubBtnListener2 extends JFrame {
 		testP.repaint();
 	}
 
+	public void resetF() {
+		skuNamedata.setText("");
+		outnumTf.setText("");
+		kinddata.setText("");
+		locationdata.setText("");
+		finalNumdata.setText("");
+	}
+
 	public Vector allData() {
 		data.clear();
 		try {
-				rs =l.stmt.executeQuery("select * from listdb order by sku_code");
+			rs = l.stmt.executeQuery("select * from listdb order by sku_code");
 			while (rs.next()) {
 				Vector in = new Vector<String>(); //
 				String sku_code = rs.getString("sku_code");
@@ -226,7 +272,27 @@ public class SubBtnListener2 extends JFrame {
 		}
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
-	
-	
-	
+
+	public void creat(String sku, String name, String kind, int num, String order) {
+
+		try {
+			pstmtInsert = l.conn.prepareStatement(
+					"insert into iohistory(sku_code,sku_name,sku_kind,ordernum,ex_num,oder_kind,complete) values( ?,? ,"
+							+ "? ,?,?,?,?)");
+			pstmtInsert.setString(1, sku);
+			pstmtInsert.setString(2, name);
+			pstmtInsert.setString(3, kind);
+			pstmtInsert.setString(4, order);
+			pstmtInsert.setInt(5, num);
+			pstmtInsert.setString(6, "출고");
+			pstmtInsert.setString(7, "yet");
+			pstmtInsert.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 }
