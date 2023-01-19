@@ -558,9 +558,13 @@ public class SubBtnListener1 extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if (seaBtn == e.getSource()) {
+//				if(loTf.getText().equals(null))) {
+//					return;
+//				}else {
 				result = searchData();
 				model.setDataVector(result, title);
 				result = null;
+//				}
 			} else if (addBtn == e.getSource()) {
 				addData();
 			} else if (delBtn == e.getSource()) {
