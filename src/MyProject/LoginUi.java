@@ -34,14 +34,13 @@ public class LoginUi extends JFrame {
 	private JTextField loginTf = new JTextField(20);
 	private JPasswordField pwTf = new JPasswordField(30);
 	private JButton login = new JButton("로그인");
-	static JCheckBox ck, radio2;
+	public JCheckBox ck, radio2;
 	private ButtonGroup g = new ButtonGroup();
 	private ImageIcon image2 = new ImageIcon("images/check.png");
 	private ImageIcon image3 = new ImageIcon("images/check1.png");
 	private ProjectDialog dialog;
-	static String mode = null;
-	static Connection conn;
-	static Statement stmt = null;
+	public Connection conn;
+	public Statement stmt = null;
 	private ResultSet rs = null;
 	public LoginUi() {
 		// 관리자 모드 여부 체크박스
@@ -121,12 +120,6 @@ public class LoginUi extends JFrame {
 		setSize(1500, 900);
 		setVisible(true);
 
-//		if (ck.isSelected()) {
-//		if (mode) {
-//			dialog = new ProjectDialog(this, "로그인 성공", "관리자 모드", loginTf.getText());
-//		}else {
-//			dialog = new ProjectDialog(this, "로그인 성공", "작업자 모드", loginTf.getText());
-//		}
 	}
 
 	class MyPanel extends JPanel {

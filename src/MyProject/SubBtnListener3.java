@@ -59,7 +59,23 @@ public class SubBtnListener3 extends JFrame {
 	private String skucode = null;
 	private String skuname = null;
 	private String skukind = null;
-
+////////////////////////////ID정보생성//////////////////////////////////////	
+	private JLabel id = new JLabel("ID>>");
+	private JLabel pw = new JLabel("PW>>");
+	private JLabel workName = new JLabel("이름>>");
+	private JLabel workAge = new JLabel("나이>>");
+	private JTextField idTf = new JTextField(20);
+	private JTextField pwTf= new JTextField(20);
+	private JTextField workNameTf= new JTextField(20);
+	private JTextField workAgeTf= new JTextField(20);
+	
+	
+	
+	
+	
+	
+	
+	
 	public SubBtnListener3(JPanel mainP, String text, String loginid, JFrame frame) {
 		this.mainP = mainP;
 		this.text = text;
@@ -152,13 +168,16 @@ public class SubBtnListener3 extends JFrame {
 			});
 		}
 		if (text.equals("ID정보관리")) {
-			
+			resetP();
+			locationSetting2();
 		}
-		
+
 	}
 
 ////////////////////////////////상품리스트 조회 세팅
 	public void locationSetting1() {
+		title.clear();
+		table.removeAll();
 		northP.add(skuName1);
 		northP.add(searchTf);
 		northP.add(searchBtn);
@@ -198,6 +217,11 @@ public class SubBtnListener3 extends JFrame {
 				skucodeTf.setEnabled(false);
 			}
 		});
+		result = null;
+	}
+////////////////////////////////작업자 id생성 세팅
+	public void locationSetting2() {
+
 		result = null;
 	}
 
@@ -253,10 +277,12 @@ public class SubBtnListener3 extends JFrame {
 		}
 
 	}
+
 ////////////////////////////////수정 메소드
 	public void update(String code, String name, String kind) {
 		try {
-			pstmtUpdate = l.conn.prepareStatement("update productlist set sku_name = ?, sku_kind = ? where sku_code = ?");
+			pstmtUpdate = l.conn
+					.prepareStatement("update productlist set sku_name = ?, sku_kind = ? where sku_code = ?");
 			pstmtUpdate.setString(3, code);
 			pstmtUpdate.setString(1, name);
 			pstmtUpdate.setString(2, kind);

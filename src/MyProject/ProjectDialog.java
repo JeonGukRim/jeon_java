@@ -19,8 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-//import MyProject.menuTree.ActionHandler;
-
 public class ProjectDialog extends JDialog {
 	private JButton btn1, btn2, btn3, btn4, btn5;
 	private JButton[] menuBtn = new JButton[5];
@@ -52,20 +50,17 @@ public class ProjectDialog extends JDialog {
 			subBtn[i] = new JButton(btnname[i]);
 			subBtn[i].setBackground(Color.white);
 		}
-
 		if (frame.ck.isSelected()) {
 			modeJl.setText("관리자 모드");
 		} else {
 			modeJl.setText("작업자 모드");
 		}
-
 		modeJl.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		modeJl.setSize(300, 200);
 		modeJl.setLocation(90, 20);
 
 		pNorth = new JPanel();
 		menuL = new JPanel();
-//		Container c = getContentPane();
 		setBackground(Color.WHITE);
 		setResizable(false);
 		setLocation(100, 100);
