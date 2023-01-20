@@ -25,7 +25,7 @@ public class ProjectDialog extends JDialog {
 	private JButton btn1, btn2, btn3, btn4, btn5;
 	private JButton[] menuBtn = new JButton[5];
 	private JPanel menuL, pNorth, pSouth, subMenuContainer;
-	private JLabel modeJl;
+	private JLabel modeJl =new JLabel();
 	private JScrollPane pCenter;
 	private JButton[] subBtn = new JButton[9];
 	private String[] btnname = { "재고현황조회", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "출고", "상품정보조회",
@@ -36,23 +36,26 @@ public class ProjectDialog extends JDialog {
 	private static boolean expand3 = false;
 	private static boolean expand4 = false;
 	private String loginid;
-	public JFrame frame;
+	public LoginUi frame;
 	private LoginUi l;
+	public boolean flg = false;
 
 	public ProjectDialog() {
 	}
-
-	public ProjectDialog(JFrame frame, String title, String mode, String loginid) {
+	public ProjectDialog(LoginUi frame, String title, String loginid) {
 		super(frame, title, true);
 		this.loginid = loginid;
 		this.frame = frame;
-		l = (LoginUi) frame;
+		
 		for (int i = 0; i < subBtn.length; i++) {
 			subBtn[i] = new JButton(btnname[i]);
 			subBtn[i].setBackground(Color.white);
 		}
-
-		modeJl = new JLabel(mode);
+		if(l.ck.isSelected())
+			modeJl.setText("관리자 모드");
+		else
+			modeJl.setText("작업자 모드");
+		
 		modeJl.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		modeJl.setSize(300, 200);
 		modeJl.setLocation(90, 20);
@@ -97,13 +100,23 @@ public class ProjectDialog extends JDialog {
 		pNorth.setLayout(new GridLayout(0, 1));
 
 		for (int i = 0; i < menuBtn.length; i++) {
-			pNorth.add(menuBtn[i]);
-			menuBtn[i].addActionListener(new ActionHandlerR());
+			if (i == 4 && l.ck.isSelected()) {
+				pNorth.add(menuBtn[i]);
+				menuBtn[i].addActionListener(new ActionHandlerR());
+			}
+			if (i != 4) {
+				pNorth.add(menuBtn[i]);
+				menuBtn[i].addActionListener(new ActionHandlerR());
+			}
 			if (i == 4) {
 				for (int j = 0; j < subBtn.length; j++)
 					subBtn[j].addActionListener(new ActionHandlerR());
 			}
 		}
+//		if (!l.ck.isSelected()) {
+//			pNorth.remove(menuBtn[4]);
+//		}
+
 		menuL.add(pNorth, "North");
 
 		subMenuContainer = new JPanel();
@@ -173,7 +186,6 @@ public class ProjectDialog extends JDialog {
 				}
 				validate();
 			}
-
 			if (menuBtn[0] == e.getSource()) {
 				expand = !expand;
 				expand1 = false;
@@ -231,6 +243,7 @@ public class ProjectDialog extends JDialog {
 				wind4();
 				wind5();
 			}
+
 		}
 
 	}
@@ -248,19 +261,18 @@ public class ProjectDialog extends JDialog {
 				pNorth.add(menuBtn[i]);
 
 			}
-			validate();
-			menuL.repaint();
-
 		} else {// 접힘
 			for (int i = 0; i < 2; i++) {
 				pNorth.remove(subBtn[i]);
 			}
-			validate();
-			menuL.repaint();
 
 		}
+		masterOnoff();
+		validate();
+		menuL.repaint();
 	}
 
+	/// 작업자 서브 2버튼 권한 여부
 	public void wind2() {
 		if (expand1) {// 펼침
 			for (int i = 2; i < 5; i++) {
@@ -272,17 +284,18 @@ public class ProjectDialog extends JDialog {
 			for (int i = 2; i < 5; i++) {
 				pNorth.add(menuBtn[i]);
 			}
-			validate();
-			menuL.repaint();
 		} else {// 접힘
 			for (int i = 2; i < 5; i++) {
 				pNorth.remove(subBtn[i]);
 			}
-			validate();
-			menuL.repaint();
+
 		}
+		masterOnoff();
+		validate();
+		menuL.repaint();
 	}
 
+	// 작업자 서브 5번 권한 체크
 	public void wind3() {
 		if (expand2) {// 펼침
 			for (int i = 3; i < 5; i++) {
@@ -293,17 +306,16 @@ public class ProjectDialog extends JDialog {
 			}
 			for (int i = 3; i < 5; i++) {
 				pNorth.add(menuBtn[i]);
-
 			}
-			validate();
-			menuL.repaint();
 		} else {// 접힘
 			for (int i = 5; i < 7; i++) {
 				pNorth.remove(subBtn[i]);
 			}
-			validate();
-			menuL.repaint();
+
 		}
+		masterOnoff();
+		validate();
+		menuL.repaint();
 	}
 
 	public void wind4() {
@@ -311,27 +323,33 @@ public class ProjectDialog extends JDialog {
 			pNorth.remove(menuBtn[4]);
 			pNorth.add(subBtn[7]);
 			pNorth.add(menuBtn[4]);
-			validate();
-			menuL.repaint();
 		} else {// 접힘
 			pNorth.remove(subBtn[7]);
-			validate();
-			menuL.repaint();
 		}
+		
+		validate();
+		menuL.repaint();
 	}
 
 	public void wind5() {
-		if (expand4) {// 펼침
-			pNorth.add(subBtn[8]);
-			validate();
-			menuL.repaint();
-		} else {// 접힘
-			pNorth.remove(subBtn[8]);
-			validate();
-			menuL.repaint();
+		if (l.ck.isSelected()) {
+			if (expand4) {// 펼침
+				pNorth.add(subBtn[8]);
+			} else {// 접힘
+				pNorth.remove(subBtn[8]);
+			}
 		}
+		masterOnoff();
+		validate();
+		menuL.repaint();
 	}
 
+	public void masterOnoff() {
+		if (!l.ck.isSelected()) {
+			pNorth.remove(menuBtn[4]);
+			pNorth.remove(subBtn[8]);
+		}
+	}
 }
 
 class textPanel extends JPanel {

@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
@@ -32,16 +34,15 @@ public class LoginUi extends JFrame {
 	private JTextField loginTf = new JTextField(20);
 	private JPasswordField pwTf = new JPasswordField(30);
 	private JButton login = new JButton("로그인");
-	private JCheckBox ck, radio2;
+	static JCheckBox ck, radio2;
 	private ButtonGroup g = new ButtonGroup();
 	private ImageIcon image2 = new ImageIcon("images/check.png");
 	private ImageIcon image3 = new ImageIcon("images/check1.png");
 	private ProjectDialog dialog;
-
+	static String mode = null;
 	static Connection conn;
 	static Statement stmt = null;
 	private ResultSet rs = null;
-
 	public LoginUi() {
 		// 관리자 모드 여부 체크박스
 //		ck = new JCheckBox("",image2);
@@ -50,7 +51,7 @@ public class LoginUi extends JFrame {
 		ck.setSize(300, 80);
 		ck.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		ck.setLocation(800, 350);
-		ck.setSelected(true);
+//		ck.setSelected(true);
 
 		// 로그인 정보
 		idjl.setLocation(800, 390);
@@ -59,42 +60,39 @@ public class LoginUi extends JFrame {
 		loginTf.setSize(400, 40);
 		loginTf.setBackground(Color.ORANGE);
 		loginTf.setLocation(880, 471);
-		
+
 		loginTf.setText("masterid");
-		
+
 		pwjl.setLocation(800, 450);
 		pwjl.setSize(200, 200);
 		pwjl.setFont(new Font("Arial", Font.ITALIC, 30));
 		pwTf.setSize(400, 40);
 		pwTf.setBackground(Color.ORANGE);
 		pwTf.setLocation(880, 533);
-		
+
 		pwTf.setText("123123");
 
 		login.setSize(200, 30);
 		login.setLocation(840, 620);
-		if(ck.isSelected()) {
-		dialog = new ProjectDialog(this, "로그인 성공","관리자 모드",loginTf.getText());
-		}else {
-			dialog = new ProjectDialog(this,"로그인 성공","작업자 모드",loginTf.getText());
-		}
+		dialog = new ProjectDialog(this, "로그인 성공", loginTf.getText());
 		dbclass();
-
 		login.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					if(ck.isSelected())
-					rs = stmt.executeQuery("select * from masterid");
-					else
-					rs = stmt.executeQuery("select * from workerid");	
+					if (ck.isSelected()) {
+						rs = stmt.executeQuery("select * from masterid");
+					} else {
+						rs = stmt.executeQuery("select * from workerid");
+					}
 					while (rs.next()) {
 						if (loginTf.getText().equals(rs.getString("id")) && pwTf.getText().equals(rs.getString("pw"))) {
 							setVisible(false);
 							dialog.setVisible(true);
-						}else {
-							JOptionPane.showMessageDialog(null,"아이디 비밀번호가 일치하지 않습니다","로그인실패",JOptionPane.ERROR_MESSAGE);
+						} else {
+							JOptionPane.showMessageDialog(null, "아이디 비밀번호가 일치하지 않습니다", "로그인실패",
+									JOptionPane.ERROR_MESSAGE);
 						}
 					}
 
@@ -102,7 +100,6 @@ public class LoginUi extends JFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-
 			}
 		});
 
@@ -122,21 +119,13 @@ public class LoginUi extends JFrame {
 		setBackground(Color.white);
 		setSize(1500, 900);
 		setVisible(true);
-		
-//		addWindowListener(new WindowAdapter(){
-//			@Override
-//			public void windowClosing(WindowEvent w) {
-//				try{
-//					stmt.close(); // Statement 객체 닫기
-//					conn.close(); // Connection 객체 닫기
-//					setVisible(false); // 화면 닫기
-//					dispose(); // 자원 반납
-//					System.exit(0); // 종료 처리
-//				}catch(Exception e){
-//
-//				}
-//			}
-//		});
+
+//		if (ck.isSelected()) {
+//		if (mode) {
+//			dialog = new ProjectDialog(this, "로그인 성공", "관리자 모드", loginTf.getText());
+//		}else {
+//			dialog = new ProjectDialog(this, "로그인 성공", "작업자 모드", loginTf.getText());
+//		}
 	}
 
 	class MyPanel extends JPanel {

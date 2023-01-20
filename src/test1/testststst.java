@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -31,10 +32,14 @@ public class testststst extends JFrame {
 		LocalDateTime now = LocalDateTime.now();
         String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 		jl.setText("IO"+formatedNow);
+		JCheckBox ck = new JCheckBox("테스트");
 		c.add(jl);
 		c.add(tf);
+		c.add(ck);
 		setSize(400, 400);
 		setVisible(true);
+		
+		System.out.println(ck.isSelected());
 		 dbclass();
 		 try {
 				rs=stmt.executeQuery("select * from listdb");

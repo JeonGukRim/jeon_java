@@ -55,7 +55,10 @@ public class SubBtnListener3 extends JFrame {
 	private JButton delBtn = new JButton("삭제");
 	private JButton resetBtn = new JButton("초기화");
 	private boolean popup = true;
+	private boolean popup1 = true;
 	private String skucode = null;
+	private String skuname = null;
+	private String skukind = null;
 
 	public SubBtnListener3(JPanel mainP, String text, String loginid, JFrame frame) {
 		this.mainP = mainP;
@@ -66,6 +69,7 @@ public class SubBtnListener3 extends JFrame {
 		if (text.equals("상품정보조회")) {
 			resetP();
 			locationSetting1();
+////////////////////////////////추가 버튼
 			addBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -86,7 +90,7 @@ public class SubBtnListener3 extends JFrame {
 					}
 				}
 			});
-
+////////////////////////////////검색 버튼
 			searchBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -101,6 +105,7 @@ public class SubBtnListener3 extends JFrame {
 					}
 				}
 			});
+////////////////////////////////리셋 버튼		
 			resetBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -108,18 +113,12 @@ public class SubBtnListener3 extends JFrame {
 					skucodeTf.setText("");
 					skunameTf.setText("");
 					skukindTf.setText("");
+					skucodeTf.setEnabled(true);
+					skunameTf.setEnabled(true);
+					skukindTf.setEnabled(true);
 				}
 			});
-
-			table.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					// 마우스 더블 클릭하면 데이터 전송
-					int index = table.getSelectedRow();
-					Vector in = (Vector) data.get(index);
-					skucode = (String) in.get(0);
-				}
-			});
+////////////////////////////////삭제 버튼
 			delBtn.addActionListener(new ActionListener() {
 
 				@Override
@@ -131,6 +130,7 @@ public class SubBtnListener3 extends JFrame {
 					model.setDataVector(result, title);
 				}
 			});
+////////////////////////////////수정 버튼			
 			upBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -138,14 +138,26 @@ public class SubBtnListener3 extends JFrame {
 					String code = skucodeTf.getText();
 					String name = skunameTf.getText();
 					String kind = skukindTf.getText();
-					update(code,name,kind);
-					result = allData();
-					model.setDataVector(result, title);
+					if (code.trim().isEmpty() || name.trim().isEmpty() || kind.trim().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "빈칸을 채워주세요", "알림", JOptionPane.DEFAULT_OPTION);
+					} else {
+						update(code, name, kind);
+						result = allData();
+						model.setDataVector(result, title);
+						if (popup1) {
+							JOptionPane.showMessageDialog(null, "수정되였습니다", "알림", JOptionPane.DEFAULT_OPTION);
+						}
+					}
 				}
 			});
 		}
+		if (text.equals("ID정보관리")) {
+			
+		}
+		
 	}
 
+////////////////////////////////상품리스트 조회 세팅
 	public void locationSetting1() {
 		northP.add(skuName1);
 		northP.add(searchTf);
@@ -171,7 +183,21 @@ public class SubBtnListener3 extends JFrame {
 		southP.add(delBtn);
 		southP.add(resetBtn);
 		mainP.add(southP, BorderLayout.SOUTH);
-
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// 마우스 더블 클릭하면 데이터 전송
+				int index = table.getSelectedRow();
+				Vector in = (Vector) data.get(index);
+				skucode = (String) in.get(0);
+				skuname = (String) in.get(1);
+				skukind = (String) in.get(2);
+				skucodeTf.setText(skucode);
+				skunameTf.setText(skuname);
+				skukindTf.setText(skukind);
+				skucodeTf.setEnabled(false);
+			}
+		});
 		result = null;
 	}
 
@@ -189,6 +215,7 @@ public class SubBtnListener3 extends JFrame {
 		testP.repaint();
 	}
 
+////////////////////////////////추가 메소드
 	public void add(String code, String name, String kind) {
 		try {
 			pstmtInsert = l.conn.prepareStatement("insert into productlist(sku_code,sku_name,sku_kind) values(?,?,?)");
@@ -204,6 +231,7 @@ public class SubBtnListener3 extends JFrame {
 		}
 	}
 
+////////////////////////////////삭제 메소드
 	public void delete(String code) {
 		try {
 			rs = l.stmt.executeQuery("select * from listdb where sku_code ='" + code + "'");
@@ -214,7 +242,7 @@ public class SubBtnListener3 extends JFrame {
 				pstmtDelete.setString(1, code);
 				pstmtDelete.executeUpdate();
 				rs = l.stmt.executeQuery("select * from productlist where sku_code ='" + code + "'");
-				if (rs != null &&rs.isBeforeFirst()) {
+				if (rs != null && rs.isBeforeFirst()) {
 					return;
 				} else {
 					JOptionPane.showMessageDialog(null, "삭제되였습니다", "알림", JOptionPane.DEFAULT_OPTION);
@@ -225,21 +253,23 @@ public class SubBtnListener3 extends JFrame {
 		}
 
 	}
-
-	public void update(String code,String name ,String kind) {
-			try{
-				pstmtUpdate = l.conn.prepareStatement("update member set name = ?, address = ? where num = ?");
-				pstmtUpdate.setString(1, code);
-				pstmtUpdate.setString(2, name);
-				pstmtUpdate.setString(3, kind);
-				pstmtUpdate.executeUpdate();
-			}catch(Exception e){
-				e.printStackTrace();
-		}	
+////////////////////////////////수정 메소드
+	public void update(String code, String name, String kind) {
+		try {
+			pstmtUpdate = l.conn.prepareStatement("update productlist set sku_name = ?, sku_kind = ? where sku_code = ?");
+			pstmtUpdate.setString(3, code);
+			pstmtUpdate.setString(1, name);
+			pstmtUpdate.setString(2, kind);
+			pstmtUpdate.executeUpdate();
+			popup1 = true;
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "없는 SKU번호입니다", "에러", JOptionPane.ERROR_MESSAGE);
+			popup1 = false;
+			e.printStackTrace();
+		}
 	}
-	
-	
-	
+
+////////////////////////////////검색 메소드
 	public Vector search(String search) {
 		data.clear();
 		try {
@@ -264,6 +294,7 @@ public class SubBtnListener3 extends JFrame {
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
+////////////////////////////////전체 데이터 가져오기 메소드
 	public Vector allData() {
 		data.clear();
 		try {
