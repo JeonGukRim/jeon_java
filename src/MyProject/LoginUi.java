@@ -74,7 +74,7 @@ public class LoginUi extends JFrame {
 
 		login.setSize(200, 30);
 		login.setLocation(840, 620);
-		dialog = new ProjectDialog(this, "로그인 성공", loginTf.getText());
+		
 		dbclass();
 		login.addActionListener(new ActionListener() {
 			@Override
@@ -86,6 +86,7 @@ public class LoginUi extends JFrame {
 					} else {
 						rs = stmt.executeQuery("select * from workerid");
 					}
+					dialog = new ProjectDialog(LoginUi.this, "로그인 성공", loginTf.getText());
 					while (rs.next()) {
 						if (loginTf.getText().equals(rs.getString("id")) && pwTf.getText().equals(rs.getString("pw"))) {
 							setVisible(false);

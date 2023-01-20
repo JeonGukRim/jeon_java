@@ -46,15 +46,19 @@ public class ProjectDialog extends JDialog {
 		super(frame, title, true);
 		this.loginid = loginid;
 		this.frame = frame;
+		System.out.println(frame.ck.isSelected());
 		
 		for (int i = 0; i < subBtn.length; i++) {
 			subBtn[i] = new JButton(btnname[i]);
 			subBtn[i].setBackground(Color.white);
 		}
-		if(l.ck.isSelected())
+		
+		if(frame.ck.isSelected()) {
 			modeJl.setText("관리자 모드");
-		else
+		} else {
 			modeJl.setText("작업자 모드");
+		}
+			
 		
 		modeJl.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		modeJl.setSize(300, 200);
