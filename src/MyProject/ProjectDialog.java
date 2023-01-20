@@ -27,9 +27,9 @@ public class ProjectDialog extends JDialog {
 	private JPanel menuL, pNorth, pSouth, subMenuContainer;
 	private JLabel modeJl;
 	private JScrollPane pCenter;
-	private JButton[] subBtn = new JButton[10];
-	private String[] btnname = { "재고현황조회", "검색", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "출고", "상품정보조회",
-			"ID정보관리" };
+	private JButton[] subBtn = new JButton[9];
+	private String[] btnname = { "재고현황조회", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "출고", "상품정보조회",
+			"ID정보관리" }; // "검색",
 	private static boolean expand = false;
 	private static boolean expand1 = false;
 	private static boolean expand2 = false;
@@ -38,9 +38,11 @@ public class ProjectDialog extends JDialog {
 	private String loginid;
 	public JFrame frame;
 	private LoginUi l;
-	
-	public ProjectDialog() {}
-	public ProjectDialog(JFrame frame, String title,String mode,String loginid) {
+
+	public ProjectDialog() {
+	}
+
+	public ProjectDialog(JFrame frame, String title, String mode, String loginid) {
 		super(frame, title, true);
 		this.loginid = loginid;
 		this.frame = frame;
@@ -49,12 +51,12 @@ public class ProjectDialog extends JDialog {
 			subBtn[i] = new JButton(btnname[i]);
 			subBtn[i].setBackground(Color.white);
 		}
-		
+
 		modeJl = new JLabel(mode);
-		modeJl.setFont(new Font("맑은 고딕",Font.BOLD,30));
-		modeJl.setSize(300,200);
-		modeJl.setLocation(90,20);
-		
+		modeJl.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		modeJl.setSize(300, 200);
+		modeJl.setLocation(90, 20);
+
 		pNorth = new JPanel();
 		menuL = new JPanel();
 //		Container c = getContentPane();
@@ -112,17 +114,17 @@ public class ProjectDialog extends JDialog {
 		add(new textPanel());
 		add(modeJl);
 		setSize(1500, 900);
-		
-		addWindowListener(new WindowAdapter(){
+
+		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent w) {
-				try{
+				try {
 					l.stmt.close(); // Statement 객체 닫기
 					l.conn.close(); // Connection 객체 닫기
 					setVisible(false); // 화면 닫기
 					dispose(); // 자원 반납
 					System.exit(0); // 종료 처리
-				}catch(Exception e){
+				} catch (Exception e) {
 
 				}
 			}
@@ -135,37 +137,37 @@ public class ProjectDialog extends JDialog {
 			for (int i = 0; i < subBtn.length; i++) {
 				if (subBtn[i] == e.getSource()) {
 					if (i == 0) {
-						new SubBtnListener(subMenuContainer, "재고현황조회",loginid,frame );
+						new SubBtnListener(subMenuContainer, "재고현황조회", loginid, frame);
 						getContentPane().add(subMenuContainer);
 
-					} else if (i == 1) {
-						new SubBtnListener(subMenuContainer, "검색",loginid,frame );
+					}
+//					else if (i == 1) {
+//						new SubBtnListener(subMenuContainer, "검색",loginid,frame );
+//						getContentPane().add(subMenuContainer);
+//					} 
+					else if (i == 1) {
+						new SubBtnListener(subMenuContainer, "입출고 이력조회", loginid, frame);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 2) {
-						new SubBtnListener(subMenuContainer, "입출고 이력조회",loginid,frame );
+						new SubBtnListener1(subMenuContainer, "발주서 생성", loginid, frame);
 						getContentPane().add(subMenuContainer);
-					} 
-					else if (i == 3) {
-						new SubBtnListener1(subMenuContainer, "발주서 생성",loginid,frame );
+					} else if (i == 3) {
+						new SubBtnListener1(subMenuContainer, "입고", loginid, frame);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 4) {
-						new SubBtnListener1(subMenuContainer, "입고",loginid,frame );
+						new SubBtnListener1(subMenuContainer, "Location정보", loginid, frame);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 5) {
-						new SubBtnListener1(subMenuContainer, "Location정보",loginid,frame );
+						new SubBtnListener2(subMenuContainer, "출고오더생성", loginid, frame);
 						getContentPane().add(subMenuContainer);
-					}
-				else if (i == 6) {
-						new SubBtnListener2(subMenuContainer, "출고오더생성",loginid,frame );
+					} else if (i == 6) {
+						new SubBtnListener2(subMenuContainer, "출고", loginid, frame);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 7) {
-						new SubBtnListener2(subMenuContainer, "출고",loginid,frame );
-						getContentPane().add(subMenuContainer);
-					} else if (i == 8) {
-						new SubBtnListener(subMenuContainer, "상품정보조회",loginid,frame );
+						new SubBtnListener3(subMenuContainer, "상품정보조회", loginid, frame);
 						getContentPane().add(subMenuContainer);
 					} else {
-						new SubBtnListener(subMenuContainer, "ID정보관리",loginid,frame );
+						new SubBtnListener3(subMenuContainer, "ID정보관리", loginid, frame);
 						getContentPane().add(subMenuContainer);
 					}
 				}
@@ -239,7 +241,7 @@ public class ProjectDialog extends JDialog {
 			for (int i = 1; i < 5; i++) {
 				pNorth.remove(menuBtn[i]);
 			}
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 2; i++) {
 				pNorth.add(subBtn[i]);
 			}
 			for (int i = 1; i < 5; i++) {
@@ -250,7 +252,7 @@ public class ProjectDialog extends JDialog {
 			menuL.repaint();
 
 		} else {// 접힘
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 2; i++) {
 				pNorth.remove(subBtn[i]);
 			}
 			validate();
@@ -264,17 +266,16 @@ public class ProjectDialog extends JDialog {
 			for (int i = 2; i < 5; i++) {
 				pNorth.remove(menuBtn[i]);
 			}
-			for (int i = 3; i < 6; i++) {
+			for (int i = 2; i < 5; i++) {
 				pNorth.add(subBtn[i]);
 			}
 			for (int i = 2; i < 5; i++) {
 				pNorth.add(menuBtn[i]);
-
 			}
 			validate();
 			menuL.repaint();
 		} else {// 접힘
-			for (int i = 3; i < 6; i++) {
+			for (int i = 2; i < 5; i++) {
 				pNorth.remove(subBtn[i]);
 			}
 			validate();
@@ -287,7 +288,7 @@ public class ProjectDialog extends JDialog {
 			for (int i = 3; i < 5; i++) {
 				pNorth.remove(menuBtn[i]);
 			}
-			for (int i = 6; i < 8; i++) {
+			for (int i = 5; i < 7; i++) {
 				pNorth.add(subBtn[i]);
 			}
 			for (int i = 3; i < 5; i++) {
@@ -297,7 +298,7 @@ public class ProjectDialog extends JDialog {
 			validate();
 			menuL.repaint();
 		} else {// 접힘
-			for (int i = 6; i < 8; i++) {
+			for (int i = 5; i < 7; i++) {
 				pNorth.remove(subBtn[i]);
 			}
 			validate();
@@ -308,12 +309,12 @@ public class ProjectDialog extends JDialog {
 	public void wind4() {
 		if (expand3) {// 펼침
 			pNorth.remove(menuBtn[4]);
-			pNorth.add(subBtn[8]);
+			pNorth.add(subBtn[7]);
 			pNorth.add(menuBtn[4]);
 			validate();
 			menuL.repaint();
 		} else {// 접힘
-			pNorth.remove(subBtn[8]);
+			pNorth.remove(subBtn[7]);
 			validate();
 			menuL.repaint();
 		}
@@ -321,11 +322,11 @@ public class ProjectDialog extends JDialog {
 
 	public void wind5() {
 		if (expand4) {// 펼침
-			pNorth.add(subBtn[9]);
+			pNorth.add(subBtn[8]);
 			validate();
 			menuL.repaint();
 		} else {// 접힘
-			pNorth.remove(subBtn[9]);
+			pNorth.remove(subBtn[8]);
 			validate();
 			menuL.repaint();
 		}
@@ -338,6 +339,7 @@ class textPanel extends JPanel {
 		setSize(900, 100);
 		setLocation(380, 5);
 	}
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setColor(new Color(132, 203, 52));
