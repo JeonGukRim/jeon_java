@@ -25,7 +25,7 @@ public class ProjectDialog extends JDialog {
 	private JButton btn1, btn2, btn3, btn4, btn5;
 	private JButton[] menuBtn = new JButton[5];
 	private JPanel menuL, pNorth, pSouth, subMenuContainer;
-	private JLabel modeJl =new JLabel();
+	private JLabel modeJl = new JLabel();
 	private JScrollPane pCenter;
 	private JButton[] subBtn = new JButton[9];
 	private String[] btnname = { "재고현황조회", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "출고", "상품정보조회",
@@ -42,24 +42,23 @@ public class ProjectDialog extends JDialog {
 
 	public ProjectDialog() {
 	}
+
 	public ProjectDialog(LoginUi frame, String title, String loginid) {
 		super(frame, title, true);
 		this.loginid = loginid;
 		this.frame = frame;
-		System.out.println(frame.ck.isSelected());
-		
+
 		for (int i = 0; i < subBtn.length; i++) {
 			subBtn[i] = new JButton(btnname[i]);
 			subBtn[i].setBackground(Color.white);
 		}
-		
-		if(frame.ck.isSelected()) {
+
+		if (frame.ck.isSelected()) {
 			modeJl.setText("관리자 모드");
 		} else {
 			modeJl.setText("작업자 모드");
 		}
-			
-		
+
 		modeJl.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		modeJl.setSize(300, 200);
 		modeJl.setLocation(90, 20);
@@ -104,7 +103,7 @@ public class ProjectDialog extends JDialog {
 		pNorth.setLayout(new GridLayout(0, 1));
 
 		for (int i = 0; i < menuBtn.length; i++) {
-			if (i == 4 && l.ck.isSelected()) {
+			if (i == 4 && frame.ck.isSelected()) {
 				pNorth.add(menuBtn[i]);
 				menuBtn[i].addActionListener(new ActionHandlerR());
 			}
@@ -117,9 +116,6 @@ public class ProjectDialog extends JDialog {
 					subBtn[j].addActionListener(new ActionHandlerR());
 			}
 		}
-//		if (!l.ck.isSelected()) {
-//			pNorth.remove(menuBtn[4]);
-//		}
 
 		menuL.add(pNorth, "North");
 
@@ -330,7 +326,7 @@ public class ProjectDialog extends JDialog {
 		} else {// 접힘
 			pNorth.remove(subBtn[7]);
 		}
-		
+		masterOnoff();
 		validate();
 		menuL.repaint();
 	}
