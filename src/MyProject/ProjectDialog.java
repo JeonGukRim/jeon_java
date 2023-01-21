@@ -127,8 +127,8 @@ public class ProjectDialog extends JDialog {
 			@Override
 			public void windowClosing(WindowEvent w) {
 				try {
-					l.stmt.close(); // Statement 객체 닫기
-					l.conn.close(); // Connection 객체 닫기
+					frame.stmt.close(); // Statement 객체 닫기
+					frame.conn.close(); // Connection 객체 닫기
 					setVisible(false); // 화면 닫기
 					dispose(); // 자원 반납
 					System.exit(0); // 종료 처리
@@ -327,7 +327,7 @@ public class ProjectDialog extends JDialog {
 	}
 
 	public void wind5() {
-		if (l.ck.isSelected()) {
+		if (frame.ck.isSelected()) {
 			if (expand4) {// 펼침
 				pNorth.add(subBtn[8]);
 			} else {// 접힘
@@ -340,7 +340,7 @@ public class ProjectDialog extends JDialog {
 	}
 
 	public void masterOnoff() {
-		if (!l.ck.isSelected()) {
+		if (!frame.ck.isSelected()) {
 			pNorth.remove(menuBtn[4]);
 			pNorth.remove(subBtn[8]);
 		}

@@ -50,7 +50,7 @@ public class LoginUi extends JFrame {
 		ck.setSize(300, 80);
 		ck.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		ck.setLocation(800, 350);
-//		ck.setSelected(true);
+		ck.setSelected(true);
 
 		// 로그인 정보
 		idjl.setLocation(800, 390);

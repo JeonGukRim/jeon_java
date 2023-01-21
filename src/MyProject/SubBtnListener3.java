@@ -35,7 +35,7 @@ public class SubBtnListener3 extends JFrame {
 	private LoginUi l;
 	private Vector data = new Vector<>();
 	private Vector title = new Vector<>();
-	private JTable table = null;
+	private JTable table = new JTable();
 	private DefaultTableModel model = new DefaultTableModel();
 	private Vector result;
 
