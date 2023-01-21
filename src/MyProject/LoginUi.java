@@ -29,15 +29,15 @@ import javax.swing.JTextField;
 
 public class LoginUi extends JFrame {
 	private MyPanel panel = new MyPanel();
-	private JLabel idjl = new JLabel("ID :");
-	private JLabel pwjl = new JLabel("PW :");
-	private JTextField loginTf = new JTextField(20);
-	private JPasswordField pwTf = new JPasswordField(30);
+	private JLabel idjl = new JLabel(new ImageIcon("images/id.png"));
+	private JLabel pwjl = new JLabel(new ImageIcon("images/pw.png"));
+	private JTextField loginTf = new JTextField(10);
+	private JPasswordField pwTf = new JPasswordField(10);
 	private JButton login = new JButton("로그인");
 	public JCheckBox ck, radio2;
 	private ButtonGroup g = new ButtonGroup();
-	private ImageIcon image2 = new ImageIcon("images/ck1-1.png");
-	private ImageIcon image3 = new ImageIcon("images/ck2-1.png");
+	private ImageIcon image2 = new ImageIcon("images/m1.png");
+	private ImageIcon image3 = new ImageIcon("images/m2.png");
 	private ProjectDialog dialog;
 	public Connection conn;
 	public Statement stmt = null;
@@ -53,21 +53,23 @@ public class LoginUi extends JFrame {
 		ck.setSelected(true);
 
 		// 로그인 정보
-		idjl.setLocation(800, 390);
+		idjl.setLocation(740, 390);
 		idjl.setSize(200, 200);
-		idjl.setFont(new Font("Arial", Font.ITALIC, 30));
+//		idjl.setFont(new Font("Arial", Font.ITALIC, 30));
 		loginTf.setSize(400, 40);
-		loginTf.setBackground(Color.ORANGE);
+		loginTf.setFont(new Font("맑음 고딕",Font.BOLD,20));
+		loginTf.setBackground(Color.LIGHT_GRAY);
 		loginTf.setLocation(880, 471);
 
 		loginTf.setText("masterid");
 
-		pwjl.setLocation(800, 450);
+		pwjl.setLocation(740, 460);
 		pwjl.setSize(200, 200);
-		pwjl.setFont(new Font("Arial", Font.ITALIC, 30));
+//		pwjl.setFont(new Font("Arial", Font.ITALIC, 30));
 		pwTf.setSize(400, 40);
-		pwTf.setBackground(Color.ORANGE);
-		pwTf.setLocation(880, 533);
+		pwTf.setFont(new Font("맑음 고딕",Font.BOLD,20));
+		pwTf.setBackground(Color.LIGHT_GRAY);
+		pwTf.setLocation(880, 540);
 
 		pwTf.setText("123123");
 
@@ -116,7 +118,8 @@ public class LoginUi extends JFrame {
 		setContentPane(panel);
 
 		setLayout(null);
-		setBackground(Color.white);
+		panel.setBackground(Color.white);
+//		panel.setBackground(new Color(80,188,223));
 		setSize(1500, 900);
 		setVisible(true);
 
