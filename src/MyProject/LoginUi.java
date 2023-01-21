@@ -36,20 +36,20 @@ public class LoginUi extends JFrame {
 	private JButton login = new JButton("로그인");
 	public JCheckBox ck, radio2;
 	private ButtonGroup g = new ButtonGroup();
-	private ImageIcon image2 = new ImageIcon("images/check.png");
-	private ImageIcon image3 = new ImageIcon("images/check1.png");
+	private ImageIcon image2 = new ImageIcon("images/ck1-1.png");
+	private ImageIcon image3 = new ImageIcon("images/ck2-1.png");
 	private ProjectDialog dialog;
 	public Connection conn;
 	public Statement stmt = null;
 	private ResultSet rs = null;
 	public LoginUi() {
 		// 관리자 모드 여부 체크박스
-//		ck = new JCheckBox("",image2);
-//		ck.setSelectedIcon(image3);
-		ck = new JCheckBox("관리자 모드");
+		ck = new JCheckBox("",image3);
+		ck.setSelectedIcon(image2);
+//		ck = new JCheckBox("관리자 모드");
 		ck.setSize(300, 80);
 		ck.setFont(new Font("맑은 고딕", Font.BOLD, 30));
-		ck.setLocation(800, 350);
+		ck.setLocation(800, 380);
 		ck.setSelected(true);
 
 		// 로그인 정보
