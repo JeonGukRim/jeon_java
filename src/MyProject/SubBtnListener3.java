@@ -180,26 +180,7 @@ public class SubBtnListener3 extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					table.setEnabled(true);
-					
-					saveBtn.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							// TODO Auto-generated method stub
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-						}
-					});
-					
+
 				}
 			});
 		}
@@ -264,21 +245,20 @@ public class SubBtnListener3 extends JFrame {
 		title.add("발주서생성권한");
 		title.add("출고오더생성권한");
 		result = getData();
-		// 컬럼 첫열에 체크박스 추가
 		model1 = new DefaultTableModel();
-//		{
-//			@Override
-//			public boolean isCellEditable(int row, int column) {
-//				if (column == 0) {
-//					return true; // 컬럼 첫열만 수정가능으로 설정
-//				} else {
-//					return false; // 기타 컬럼열은 수정불가
-//				}
-//			}
-//		};  
 
 		model1.setDataVector(result, title);
-		table = new JTable(model1);
+		table = new JTable(model1)
+		{
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				if (column == 0) {
+					return false; // 컬럼 첫열만 수정가능으로 설정
+				} else {
+					return true; // 기타 컬럼열은 수정불가
+				}
+			}
+		};  
 
 //		TableColumn tc = table.getColumnModel().getColumn(0);
 //		tc.setCellEditor(table.getDefaultEditor(Boolean.class));
@@ -293,9 +273,23 @@ public class SubBtnListener3 extends JFrame {
 		JCheckBox box2 = new JCheckBox();
 		box2.setHorizontalAlignment(JLabel.CENTER);
 		table.getColumn("출고오더생성권한").setCellEditor(new DefaultCellEditor(box2));
-		
-		table.setEnabled(false);
-		
+
+//		table.setEnabled(false);
+//		System.out.println(table.getValueAt(0, 0));
+//		System.out.println(table.getValueAt(0, 1));
+//		System.out.println(table.getValueAt(0, 2));
+//		System.out.println(table.getValueAt(0, 3));
+//		System.out.println(table.getValueAt(0, 4));
+//		System.out.println(table.getValueAt(0, 5));
+//		for (int idx = 0; idx < table.getRowCount(); idx++) {
+//			String rows = "";
+//			 for(int cdx=0; cdx<table.getColumnCount(); cdx++) {
+//				 Object val = table.getValueAt(idx, cdx);
+//				 rows = rows + " " + val;	 
+//			 }
+//			 System.out.println(rows);
+//		}
+
 		JScrollPane sp = new JScrollPane(table);
 		mainP.add(sp, BorderLayout.CENTER);
 
@@ -471,7 +465,6 @@ public class SubBtnListener3 extends JFrame {
 				data.add(in);
 			}
 		} catch (Exception e) {
-			System.out.println("wtf");
 			e.printStackTrace();
 		}
 
