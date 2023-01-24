@@ -2,7 +2,7 @@ package MyProject;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Vector;
+import java.util.concurrent.Flow;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -23,6 +24,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.text.html.HTMLDocument.HTMLReader.SpecialAction;
 
 public class SubBtnListener3 extends JFrame {
 	private JPanel mainP = new JPanel(); // 메인패널
@@ -65,23 +68,19 @@ public class SubBtnListener3 extends JFrame {
 	private String skuname = null;
 	private String skukind = null;
 ////////////////////////////ID정보생성//////////////////////////////////////	
-	private JLabel id = new JLabel("ID>>",JLabel.CENTER);
-	private JLabel pw = new JLabel("PW>>",JLabel.CENTER);
-	private JLabel workName = new JLabel("이름>>",JLabel.CENTER);
-	private JLabel workAge = new JLabel("나이>>",JLabel.CENTER);
+	private JLabel id = new JLabel("ID>>", JLabel.CENTER);
+	private JLabel pw = new JLabel("PW>>", JLabel.CENTER);
+	private JLabel workName = new JLabel("이름>>", JLabel.CENTER);
+	private JLabel workAge = new JLabel("나이>>", JLabel.CENTER);
 	private JTextField idTf = new JTextField(10);
-	private JTextField pwTf= new JTextField(10);
-	private JTextField workNameTf= new JTextField(10);
-	private JTextField workAgeTf= new JTextField(10);
+	private JTextField pwTf = new JTextField(10);
+	private JTextField workNameTf = new JTextField(10);
+	private JTextField workAgeTf = new JTextField(10);
 	private Vector data1 = new Vector<>();
 	private JTable table1 = new JTable();
-	
-	
-	
-	
-	
-	
-	
+	private JButton saveBtn = new JButton("저장");
+	private DefaultTableModel model1 = null;
+
 	public SubBtnListener3(JPanel mainP, String text, String loginid, JFrame frame) {
 		this.mainP = mainP;
 		this.text = text;
@@ -176,6 +175,33 @@ public class SubBtnListener3 extends JFrame {
 		if (text.equals("ID정보관리")) {
 			resetP();
 			locationSetting2();
+			upBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					table.setEnabled(true);
+					
+					saveBtn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+						}
+					});
+					
+				}
+			});
 		}
 
 	}
@@ -225,10 +251,12 @@ public class SubBtnListener3 extends JFrame {
 		});
 		result = null;
 	}
+
 ////////////////////////////////작업자 id생성 세팅
 	public void locationSetting2() {
 		title.clear();
 		table.removeAll();
+//		title.add("선택");
 		title.add("아이디");
 		title.add("비밀번호");
 		title.add("이름");
@@ -236,28 +264,47 @@ public class SubBtnListener3 extends JFrame {
 		title.add("발주서생성권한");
 		title.add("출고오더생성권한");
 		result = getData();
-		model.setDataVector(result, title);
-		table = new JTable(model);
-		
-		
-		
-		
-		
-		
+		// 컬럼 첫열에 체크박스 추가
+		model1 = new DefaultTableModel();
+//		{
+//			@Override
+//			public boolean isCellEditable(int row, int column) {
+//				if (column == 0) {
+//					return true; // 컬럼 첫열만 수정가능으로 설정
+//				} else {
+//					return false; // 기타 컬럼열은 수정불가
+//				}
+//			}
+//		};  
+
+		model1.setDataVector(result, title);
+		table = new JTable(model1);
+
+//		TableColumn tc = table.getColumnModel().getColumn(0);
+//		tc.setCellEditor(table.getDefaultEditor(Boolean.class));
+//		tc.setCellRenderer(table.getDefaultRenderer(Boolean.class));
+
 		table.getColumn("발주서생성권한").setCellRenderer(dcr);
 		JCheckBox box1 = new JCheckBox();
 		box1.setHorizontalAlignment(JLabel.CENTER);
 		table.getColumn("발주서생성권한").setCellEditor(new DefaultCellEditor(box1));
-		
+
 		table.getColumn("출고오더생성권한").setCellRenderer(dcr);
 		JCheckBox box2 = new JCheckBox();
 		box2.setHorizontalAlignment(JLabel.CENTER);
 		table.getColumn("출고오더생성권한").setCellEditor(new DefaultCellEditor(box2));
 		
+		table.setEnabled(false);
 		
 		JScrollPane sp = new JScrollPane(table);
 		mainP.add(sp, BorderLayout.CENTER);
-		
+
+		northP.setLayout(new FlowLayout(FlowLayout.LEFT));
+		northP.add(upBtn);
+		northP.add(saveBtn);
+		northP.add(delBtn);
+		mainP.add(northP, "North");
+
 		southP.add(id);
 		southP.add(idTf);
 		southP.add(pw);
@@ -267,15 +314,13 @@ public class SubBtnListener3 extends JFrame {
 		southP.add(workAge);
 		southP.add(workAgeTf);
 		southP.add(addBtn);
-		southP.add(upBtn);
-		southP.add(delBtn);
-		mainP.add(southP,BorderLayout.SOUTH);
+		mainP.add(southP, BorderLayout.SOUTH);
 		result = null;
 	}
-	
-	//체크박스 정렬을 지정해준다
+
+	// 체크박스 정렬을 지정해준다
 	DefaultTableCellRenderer dcr = new DefaultTableCellRenderer() {
-		public Component getTableCellRendererComponent // 
+		public Component getTableCellRendererComponent //
 		(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			JCheckBox box = new JCheckBox();
 			box.setSelected(((Boolean) value).booleanValue());
@@ -283,7 +328,6 @@ public class SubBtnListener3 extends JFrame {
 			return box;
 		}
 	};
-	
 
 	public void resetP() {
 		mainP.removeAll();
@@ -416,7 +460,8 @@ public class SubBtnListener3 extends JFrame {
 				String name = rs.getString("worker_name");
 				String age = rs.getString("worker_age");
 				boolean powin = rs.getBoolean("pow_inorder");
-				boolean powout =rs.getBoolean("pow_outorder");
+				boolean powout = rs.getBoolean("pow_outorder");
+//				in.add(new Boolean(false));
 				in.add(id);
 				in.add(pw);
 				in.add(name);
@@ -429,8 +474,8 @@ public class SubBtnListener3 extends JFrame {
 			System.out.println("wtf");
 			e.printStackTrace();
 		}
-		
-		
+
 		return data;
 	}
+
 }
