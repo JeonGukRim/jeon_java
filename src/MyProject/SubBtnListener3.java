@@ -237,7 +237,6 @@ public class SubBtnListener3 extends JFrame {
 	public void locationSetting2() {
 		title.clear();
 		table.removeAll();
-//		title.add("선택");
 		title.add("아이디");
 		title.add("비밀번호");
 		title.add("이름");
