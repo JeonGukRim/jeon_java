@@ -239,6 +239,11 @@ public class SubBtnListener3 extends JFrame {
 		model.setDataVector(result, title);
 		table = new JTable(model);
 		
+		
+		
+		
+		
+		
 		table.getColumn("발주서생성권한").setCellRenderer(dcr);
 		JCheckBox box1 = new JCheckBox();
 		box1.setHorizontalAlignment(JLabel.CENTER);
@@ -248,8 +253,6 @@ public class SubBtnListener3 extends JFrame {
 		JCheckBox box2 = new JCheckBox();
 		box2.setHorizontalAlignment(JLabel.CENTER);
 		table.getColumn("출고오더생성권한").setCellEditor(new DefaultCellEditor(box2));
-		
-		
 		
 		
 		JScrollPane sp = new JScrollPane(table);
@@ -269,6 +272,8 @@ public class SubBtnListener3 extends JFrame {
 		mainP.add(southP,BorderLayout.SOUTH);
 		result = null;
 	}
+	
+	//체크박스 정렬을 지정해준다
 	DefaultTableCellRenderer dcr = new DefaultTableCellRenderer() {
 		public Component getTableCellRendererComponent // 
 		(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
