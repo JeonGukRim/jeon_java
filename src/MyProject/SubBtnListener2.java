@@ -265,7 +265,7 @@ public class SubBtnListener2 extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// 마우스 더블 클릭하면 데이터 전송
-				if (e.getClickCount() == 2 && exp == true) {
+				if (e.getClickCount() == 1 && exp == true) {
 					int index = table.getSelectedRow();
 					Vector in = (Vector) data.get(index);
 					String sku_code = (String) in.get(0);

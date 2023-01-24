@@ -1,6 +1,8 @@
 package MyProject;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -9,7 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Vector;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class SubBtnListener3 extends JFrame {
@@ -60,15 +65,16 @@ public class SubBtnListener3 extends JFrame {
 	private String skuname = null;
 	private String skukind = null;
 ////////////////////////////ID정보생성//////////////////////////////////////	
-	private JLabel id = new JLabel("ID>>");
-	private JLabel pw = new JLabel("PW>>");
-	private JLabel workName = new JLabel("이름>>");
-	private JLabel workAge = new JLabel("나이>>");
-	private JTextField idTf = new JTextField(20);
-	private JTextField pwTf= new JTextField(20);
-	private JTextField workNameTf= new JTextField(20);
-	private JTextField workAgeTf= new JTextField(20);
-	
+	private JLabel id = new JLabel("ID>>",JLabel.CENTER);
+	private JLabel pw = new JLabel("PW>>",JLabel.CENTER);
+	private JLabel workName = new JLabel("이름>>",JLabel.CENTER);
+	private JLabel workAge = new JLabel("나이>>",JLabel.CENTER);
+	private JTextField idTf = new JTextField(10);
+	private JTextField pwTf= new JTextField(10);
+	private JTextField workNameTf= new JTextField(10);
+	private JTextField workAgeTf= new JTextField(10);
+	private Vector data1 = new Vector<>();
+	private JTable table1 = new JTable();
 	
 	
 	
@@ -221,9 +227,58 @@ public class SubBtnListener3 extends JFrame {
 	}
 ////////////////////////////////작업자 id생성 세팅
 	public void locationSetting2() {
-
+		title.clear();
+		table.removeAll();
+		title.add("아이디");
+		title.add("비밀번호");
+		title.add("이름");
+		title.add("나이");
+		title.add("발주서생성권한");
+		title.add("출고오더생성권한");
+		result = getData();
+		model.setDataVector(result, title);
+		table = new JTable(model);
+		
+		table.getColumn("발주서생성권한").setCellRenderer(dcr);
+		JCheckBox box1 = new JCheckBox();
+		box1.setHorizontalAlignment(JLabel.CENTER);
+		table.getColumn("발주서생성권한").setCellEditor(new DefaultCellEditor(box1));
+		
+		table.getColumn("출고오더생성권한").setCellRenderer(dcr);
+		JCheckBox box2 = new JCheckBox();
+		box2.setHorizontalAlignment(JLabel.CENTER);
+		table.getColumn("출고오더생성권한").setCellEditor(new DefaultCellEditor(box2));
+		
+		
+		
+		
+		JScrollPane sp = new JScrollPane(table);
+		mainP.add(sp, BorderLayout.CENTER);
+		
+		southP.add(id);
+		southP.add(idTf);
+		southP.add(pw);
+		southP.add(pwTf);
+		southP.add(workName);
+		southP.add(workNameTf);
+		southP.add(workAge);
+		southP.add(workAgeTf);
+		southP.add(addBtn);
+		southP.add(upBtn);
+		southP.add(delBtn);
+		mainP.add(southP,BorderLayout.SOUTH);
 		result = null;
 	}
+	DefaultTableCellRenderer dcr = new DefaultTableCellRenderer() {
+		public Component getTableCellRendererComponent // 
+		(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			JCheckBox box = new JCheckBox();
+			box.setSelected(((Boolean) value).booleanValue());
+			box.setHorizontalAlignment(JLabel.CENTER);
+			return box;
+		}
+	};
+	
 
 	public void resetP() {
 		mainP.removeAll();
@@ -344,4 +399,33 @@ public class SubBtnListener3 extends JFrame {
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
+//////////////////////////////// 작업자 아이디정보 가져오기 메소드	
+	public Vector getData() {
+		data.clear();
+		try {
+			rs = l.stmt.executeQuery("select * from workerid order by id ");
+			while (rs.next()) {
+				Vector in = new Vector<Object>(); //
+				String id = rs.getString("id");
+				String pw = rs.getString("pw");
+				String name = rs.getString("worker_name");
+				String age = rs.getString("worker_age");
+				boolean powin = rs.getBoolean("pow_inorder");
+				boolean powout =rs.getBoolean("pow_outorder");
+				in.add(id);
+				in.add(pw);
+				in.add(name);
+				in.add(age);
+				in.add(powin);
+				in.add(powout);
+				data.add(in);
+			}
+		} catch (Exception e) {
+			System.out.println("wtf");
+			e.printStackTrace();
+		}
+		
+		
+		return data;
+	}
 }
