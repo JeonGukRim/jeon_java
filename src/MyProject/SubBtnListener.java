@@ -5,14 +5,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -36,11 +40,10 @@ public class SubBtnListener extends JFrame {
 	private JTextField searchTf1 = new JTextField(20);
 	private JTextField searchTf2 = new JTextField(20);
 	private JButton searchBtn = new JButton("검색");
-//	private JPanel searchPanel = new JPanel();
-	private JLabel skuJl = new JLabel("SKU코드 :");
-	private JTextField skuCode = new JTextField(20);
-	private JLabel memoupJl = new JLabel("메모 수정");
-	private JButton memoupBtn = new JButton("저장");
+//	private JLabel skuJl = new JLabel("SKU코드 :");
+//	private JTextField skuCode = new JTextField(20);
+//	private JLabel memoupJl = new JLabel("메모 수정");
+	private JButton memoupBtn = new JButton("메모수정");
 	private JTextField memoupTf = new JTextField(20);
 	private JPanel upPanel = new JPanel();
 	private PreparedStatement pstmtUpdate = null;
@@ -51,8 +54,9 @@ public class SubBtnListener extends JFrame {
 	private JPanel centerPanel = new JPanel();
 	private JPanel northP = new JPanel();
 	private JPanel southP = new JPanel();
-	public SubBtnListener() {
-	}
+	private String[] t = { "SKU코드", "제품명" };
+	private JComboBox titleCombo = new JComboBox<String>(t);
+	private int row = -1; // 행미선택시 디폴트 값이 -1임;
 
 	public SubBtnListener(JPanel jp, String text, String loginid, JFrame frame) {
 		// TODO Auto-generated constructor stub
@@ -66,75 +70,55 @@ public class SubBtnListener extends JFrame {
 		if (text.equals("재고현황조회")) {
 			resetP();
 			title.clear();
-			table.removeAll();
-			title.add("SKU번호");
-			title.add("제품명");
-			title.add("분류");
-			title.add("재고위치");
-			title.add("수량");
-			title.add("메모");
-			southP.add(skuJl);
-			southP.add(skuCode);
-			southP.add(memoupJl);
-			southP.add(memoupTf);
-			southP.add(memoupBtn);
-			// 조회된 내역에서 메모 내역 수정 버튼
-			memoupBtn.addActionListener(new ActionListener() {
+			locationSetting1();
+			// 매번 행 클릭시 데이터 가져오기
+			table.addMouseListener(new MouseAdapter() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					String code = skuCode.getText();
-					String memo = memoupTf.getText();
-					update(code, memo);
-					re(); // 데이터 값 가져오기
-					model.setDataVector(result, title);
+				public void mouseClicked(MouseEvent e) {
+					row = table.getSelectedRow();
 				}
 			});
-//			jp.removeAll();
-			re(); // 데이터 값 가져오기
-			model.setDataVector(result, title);
-			table = new JTable(model);
-			JScrollPane sp = new JScrollPane(table);
-			jp.add(sp, BorderLayout.CENTER);
-			jp.add(southP, BorderLayout.SOUTH);
-			result = null;
+			searchTf1.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					String search = searchTf1.getText();
+					if (search.trim().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "검색할 내용을 입력해주세요", "알림", JOptionPane.DEFAULT_OPTION);
+						return;
+					} else {
+						result = search(search);
+						model.setDataVector(result, title);
+					}
+				}
+			});
+			memoupBtn.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					update();
+				}
+			});
 		} else if (text.equals("입출고 이력조회")) {
 			resetP();
-			ButtonGroup g = new ButtonGroup();
-			for (int i = 0; i < radio.length; i++) {
-				radio[i] = new JRadioButton(colName[i]);
-				g.add(radio[i]);
-				upPanel.add(radio[i]);
-				radio[i].addItemListener(new radioListener());
-			}
-			radio[0].setSelected(true);
-			jp.add(upPanel, BorderLayout.NORTH);
-			title.clear();
-			table.removeAll();
-			String[] colName1 = { "SKU코드", "제품명", "종류", "오더번호", "입/출", "작업일자", "예정수량", "실제수량","작업자", "작업현황", "재고위치" };
-			for (int i = 0; i < colName1.length; i++) {
-				title.add(colName1[i]);
-			}
-			result = allData();
-			model.setDataVector(result, title);
-			table = new JTable(model);
-			JScrollPane sp = new JScrollPane(table);
-			jp.add(sp, BorderLayout.CENTER);
+			locationSetting2();
 		}
 
 	}
 
-	// 데이터 받아 넣기
-	public void re() {
-		result = allData();
-	}
-
-	private void update(String code, String memo) {
+	private void update() {
 		try {
-			pstmtUpdate = l.conn.prepareStatement("update listdb set memo = ? where sku_code = ?");
-			pstmtUpdate.setString(1, memo);
-			pstmtUpdate.setString(2, code);
-			pstmtUpdate.executeUpdate();
-
+			if (row >= 0) {
+				Vector in = (Vector) data.get(row);
+				pstmtUpdate = l.conn.prepareStatement("update listdb set memo = ? where sku_code = ?");
+				pstmtUpdate.setString(1, (String) in.get(5));
+				pstmtUpdate.setString(2, (String) in.get(0));
+				pstmtUpdate.executeUpdate();
+				JOptionPane.showMessageDialog(null, "메모수정이 완료되였습니다", "알림", 1);
+			} else {
+				JOptionPane.showMessageDialog(null, "메모수정을 원하는 행을 선택해주세요", "알림", 1);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -165,13 +149,13 @@ public class SubBtnListener extends JFrame {
 				}
 
 			} else {
-				if(radio[0].isSelected())
-				rs = l.stmt.executeQuery("select * from iohistory order by sku_code");
-				else if(radio[1].isSelected())
+				if (radio[0].isSelected())
+					rs = l.stmt.executeQuery("select * from iohistory order by sku_code");
+				else if (radio[1].isSelected())
 					rs = l.stmt.executeQuery("select * from iohistory where oder_kind = '입고'");
 				else
 					rs = l.stmt.executeQuery("select * from iohistory where oder_kind = '출고'");
-				
+
 				while (rs.next()) {
 					Vector in = new Vector<String>(); //
 					String sku_code = rs.getString("sku_code");
@@ -205,7 +189,7 @@ public class SubBtnListener extends JFrame {
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
-//레디오 리스너
+	// 레디오 리스너
 	class radioListener implements ItemListener {
 
 		@Override
@@ -226,6 +210,106 @@ public class SubBtnListener extends JFrame {
 			}
 		}
 
+	}
+
+	// 재고현황 세팅
+	public void locationSetting1() {
+		table.removeAll();
+		title.add("SKU번호");
+		title.add("제품명");
+		title.add("분류");
+		title.add("재고위치");
+		title.add("수량");
+		title.add("메모");
+
+		northP.add(titleCombo);
+		northP.add(searchTf1);
+//		northP.add(searchBtn);
+		northP.add(memoupBtn);
+
+		// 조회된 내역에서 메모 내역 수정 버튼
+//		memoupBtn.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				String code = skuCode.getText();
+//				String memo = memoupTf.getText();
+//				update(code, memo);
+//				result = allData(); // 데이터 값 가져오기
+//				model.setDataVector(result, title);
+//			}
+//		});
+
+		result = allData();// 데이터 값 가져오기
+		model.setDataVector(result, title);
+		table = new JTable(model) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				if (column == 5) {
+					return true; // 메모컬럼만 수정가능
+				} else {
+					return false; // 기타 컬럼열은 수정불가
+				}
+			}
+		};
+		;
+		JScrollPane sp = new JScrollPane(table);
+		jp.add(northP, BorderLayout.NORTH);
+		jp.add(sp, BorderLayout.CENTER);
+		result = null;
+	}
+
+	// 입출고 이력 세팅
+	public void locationSetting2() {
+		ButtonGroup g = new ButtonGroup();
+		for (int i = 0; i < radio.length; i++) {
+			radio[i] = new JRadioButton(colName[i]);
+			g.add(radio[i]);
+			upPanel.add(radio[i]);
+			radio[i].addItemListener(new radioListener());
+		}
+		radio[0].setSelected(true);
+		jp.add(upPanel, BorderLayout.NORTH);
+		title.clear();
+		table.removeAll();
+		String[] colName1 = { "SKU코드", "제품명", "종류", "오더번호", "입/출", "작업일자", "예정수량", "실제수량", "작업자", "작업현황", "재고위치" };
+		for (int i = 0; i < colName1.length; i++) {
+			title.add(colName1[i]);
+		}
+		result = allData();
+		model.setDataVector(result, title);
+		JScrollPane sp = new JScrollPane(table);
+		jp.add(sp, BorderLayout.CENTER);
+
+	}
+
+	public Vector search(String search) {
+		data.clear();
+		try {
+			String select = titleCombo.getSelectedItem().toString();
+			if (select.equals("SKU코드"))
+				rs = l.stmt.executeQuery("select * from listdb  where sku_code like '%" + search + "%'");
+			else
+				rs = l.stmt.executeQuery("select * from listdb  where sku_name like '%" + search + "%'");
+			while (rs.next()) {
+				Vector in = new Vector<Object>(); //
+				String code = rs.getString("sku_code");
+				String name = rs.getString("sku_name");
+				String kind = rs.getString("sku_kind");
+				String location = rs.getString("sku_location");
+				int num = rs.getInt("sku_finalnum");
+				String memo = rs.getString("memo");
+				in.add(code);
+				in.add(name);
+				in.add(kind);
+				in.add(location);
+				in.add(num);
+				in.add(memo);
+				data.add(in);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
 	public void resetP() {
