@@ -10,11 +10,11 @@ import java.awt.event.MouseEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Vector;
-import java.util.concurrent.Flow;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,8 +24,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.text.html.HTMLDocument.HTMLReader.SpecialAction;
 
 public class SubBtnListener3 extends JFrame {
 	private JPanel mainP = new JPanel(); // 메인패널
@@ -80,6 +78,9 @@ public class SubBtnListener3 extends JFrame {
 	private JTable table1 = new JTable();
 	private JButton saveBtn = new JButton("저장");
 	private DefaultTableModel model1 = null;
+	private String[] t = { "아이디", "이름" };
+	private JComboBox titleCombo = new JComboBox<String>(t);
+	private int row = -1;
 
 	public SubBtnListener3(JPanel mainP, String text, String loginid, JFrame frame) {
 		this.mainP = mainP;
@@ -102,7 +103,7 @@ public class SubBtnListener3 extends JFrame {
 						JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
 						return;
 					} else {
-						add(code, name, kind);
+						add(code, name, kind, "");
 						result = allData();
 						model.setDataVector(result, title);
 						if (popup) {
@@ -175,12 +176,61 @@ public class SubBtnListener3 extends JFrame {
 		if (text.equals("ID정보관리")) {
 			resetP();
 			locationSetting2();
+			table.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					// 마우스 더블 클릭하면 데이터 전송
+					row = table.getSelectedRow();
+				}
+			});
+////////////////////////////////검색 버튼			
+			searchBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					String search = searchTf.getText();
+					if (search.trim().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "검색할 내용을 입력해주세요", "알림", JOptionPane.DEFAULT_OPTION);
+						return;
+					} else {
+						result = search(search);
+						model1.setDataVector(result, title);
+						tableCheckBox();
+					}
+				}
+			});
+////////////////////////////////수정 버튼	
 			upBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					table.setEnabled(true);
-
+					update("", "", "");
+					result = getData();
+					model1.setDataVector(result, title);
+					tableCheckBox();
+				}
+			});
+////////////////////////////////추가 버튼
+			addBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					String id = idTf.getText();
+					String pw = pwTf.getText();
+					String name = workNameTf.getText();
+					String age = workAgeTf.getText();
+					if (id.trim().isEmpty() || pw.trim().isEmpty() || name.trim().isEmpty() || age.trim().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
+						return;
+					} else {
+						add(id, pw, name, age);
+						result = getData();
+						model1.setDataVector(result, title);
+						tableCheckBox();
+//						if (popup) {
+//							JOptionPane.showMessageDialog(null, "추가 되였습니다", "알림", JOptionPane.DEFAULT_OPTION);
+//						}
+					}
 				}
 			});
 		}
@@ -231,6 +281,7 @@ public class SubBtnListener3 extends JFrame {
 			}
 		});
 		result = null;
+
 	}
 
 ////////////////////////////////작업자 id생성 세팅
@@ -247,8 +298,7 @@ public class SubBtnListener3 extends JFrame {
 		model1 = new DefaultTableModel();
 
 		model1.setDataVector(result, title);
-		table = new JTable(model1)
-		{
+		table = new JTable(model1) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				if (column == 0) {
@@ -257,44 +307,23 @@ public class SubBtnListener3 extends JFrame {
 					return true; // 기타 컬럼열은 수정불가
 				}
 			}
-		};  
+		};
 
 //		TableColumn tc = table.getColumnModel().getColumn(0);
 //		tc.setCellEditor(table.getDefaultEditor(Boolean.class));
 //		tc.setCellRenderer(table.getDefaultRenderer(Boolean.class));
 
-		table.getColumn("발주서생성권한").setCellRenderer(dcr);
-		JCheckBox box1 = new JCheckBox();
-		box1.setHorizontalAlignment(JLabel.CENTER);
-		table.getColumn("발주서생성권한").setCellEditor(new DefaultCellEditor(box1));
-
-		table.getColumn("출고오더생성권한").setCellRenderer(dcr);
-		JCheckBox box2 = new JCheckBox();
-		box2.setHorizontalAlignment(JLabel.CENTER);
-		table.getColumn("출고오더생성권한").setCellEditor(new DefaultCellEditor(box2));
-
-//		table.setEnabled(false);
-//		System.out.println(table.getValueAt(0, 0));
-//		System.out.println(table.getValueAt(0, 1));
-//		System.out.println(table.getValueAt(0, 2));
-//		System.out.println(table.getValueAt(0, 3));
-//		System.out.println(table.getValueAt(0, 4));
-//		System.out.println(table.getValueAt(0, 5));
-//		for (int idx = 0; idx < table.getRowCount(); idx++) {
-//			String rows = "";
-//			 for(int cdx=0; cdx<table.getColumnCount(); cdx++) {
-//				 Object val = table.getValueAt(idx, cdx);
-//				 rows = rows + " " + val;	 
-//			 }
-//			 System.out.println(rows);
-//		}
+		tableCheckBox();
 
 		JScrollPane sp = new JScrollPane(table);
 		mainP.add(sp, BorderLayout.CENTER);
 
 		northP.setLayout(new FlowLayout(FlowLayout.LEFT));
+		northP.add(titleCombo);
+		northP.add(searchTf);
+		northP.add(searchBtn);
 		northP.add(upBtn);
-		northP.add(saveBtn);
+//		northP.add(saveBtn);
 		northP.add(delBtn);
 		mainP.add(northP, "North");
 
@@ -308,6 +337,7 @@ public class SubBtnListener3 extends JFrame {
 		southP.add(workAgeTf);
 		southP.add(addBtn);
 		mainP.add(southP, BorderLayout.SOUTH);
+
 		result = null;
 	}
 
@@ -337,18 +367,38 @@ public class SubBtnListener3 extends JFrame {
 	}
 
 ////////////////////////////////추가 메소드
-	public void add(String code, String name, String kind) {
-		try {
-			pstmtInsert = l.conn.prepareStatement("insert into productlist(sku_code,sku_name,sku_kind) values(?,?,?)");
-			pstmtInsert.setString(1, code);
-			pstmtInsert.setString(2, name);
-			pstmtInsert.setString(3, kind);
-			pstmtInsert.executeUpdate();
-			popup = true;
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "이미존재하는 SKU번호입니다", "에러", JOptionPane.ERROR_MESSAGE);
-			popup = false;
-			e.printStackTrace();
+	public void add(String a, String b, String c, String age) {
+		if (text.equals("상품정보조회")) {
+			try {
+				pstmtInsert = l.conn
+						.prepareStatement("insert into productlist(sku_code,sku_name,sku_kind) values(?,?,?)");
+				pstmtInsert.setString(1, a);
+				pstmtInsert.setString(2, b);
+				pstmtInsert.setString(3, c);
+				pstmtInsert.executeUpdate();
+				popup = true;
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "이미존재하는 SKU번호입니다", "에러", JOptionPane.ERROR_MESSAGE);
+				popup = false;
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				pstmtInsert = l.conn.prepareStatement(
+						"insert into workerid (id,pw,worker_name,worker_age,pow_inorder,pow_outorder) values(?,?,?,?,?,?)");
+				pstmtInsert.setString(1, a);
+				pstmtInsert.setString(2, b);
+				pstmtInsert.setString(3, c);
+				pstmtInsert.setString(4, age);
+				pstmtInsert.setBoolean(5, false);
+				pstmtInsert.setBoolean(6, false);
+				pstmtInsert.executeUpdate();
+//				popup = true;
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "이미존재하는 아이디입니다", "에러", JOptionPane.ERROR_MESSAGE);
+//				popup = false;
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -377,18 +427,52 @@ public class SubBtnListener3 extends JFrame {
 
 ////////////////////////////////수정 메소드
 	public void update(String code, String name, String kind) {
-		try {
-			pstmtUpdate = l.conn
-					.prepareStatement("update productlist set sku_name = ?, sku_kind = ? where sku_code = ?");
-			pstmtUpdate.setString(3, code);
-			pstmtUpdate.setString(1, name);
-			pstmtUpdate.setString(2, kind);
-			pstmtUpdate.executeUpdate();
-			popup1 = true;
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "없는 SKU번호입니다", "에러", JOptionPane.ERROR_MESSAGE);
-			popup1 = false;
-			e.printStackTrace();
+		if (text.equals("상품정보조회")) {
+			try {
+				pstmtUpdate = l.conn
+						.prepareStatement("update productlist set sku_name = ?, sku_kind = ? where sku_code = ?");
+				pstmtUpdate.setString(3, code);
+				pstmtUpdate.setString(1, name);
+				pstmtUpdate.setString(2, kind);
+				pstmtUpdate.executeUpdate();
+				popup1 = true;
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "없는 SKU번호입니다", "에러", JOptionPane.ERROR_MESSAGE);
+				popup1 = false;
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				boolean exp = true;
+				if (row >= 0) { //
+					Vector in = (Vector) data.get(row);
+					pstmtUpdate = l.conn.prepareStatement("update workerid set pw = ?, worker_name = ? ,worker_age = ?,"
+							+ "pow_inorder= ?,pow_outorder = ? where id = ?");
+					pstmtUpdate.setString(1, ((String) in.get(1)).trim());
+					pstmtUpdate.setString(2, ((String) in.get(2)).trim());
+					pstmtUpdate.setString(3, ((String) in.get(3)).trim());
+					pstmtUpdate.setBoolean(4, (boolean) in.get(4));
+					pstmtUpdate.setBoolean(5, (boolean) in.get(5));
+					pstmtUpdate.setString(6, (String) in.get(0));
+
+					for (int i = 0; i < in.size(); i++) {
+						if (in.get(i).equals("")) {
+							exp = false;
+						}
+					}
+					if (exp) {
+						pstmtUpdate.executeUpdate();
+					}else {
+						JOptionPane.showMessageDialog(null,"빈칸을 채줘주세요","알림",1);
+					}
+				}
+//				popup1 = true;
+			} catch (Exception e) {
+//				popup1 = false;
+				JOptionPane.showMessageDialog(null, "입력한내용을 학인해주세요", "알림", 1);
+				e.printStackTrace();
+			}
+
 		}
 	}
 
@@ -396,20 +480,44 @@ public class SubBtnListener3 extends JFrame {
 	public Vector search(String search) {
 		data.clear();
 		try {
-			rs = l.stmt.executeQuery("select * from productlist p left join (select sku_code, SUM(sku_finalnum) as "
-					+ "total from listdb group by sku_code) s on p.sku_code = s.sku_code where sku_name like '%"
-					+ search + "%'");
-			while (rs.next()) {
-				Vector in = new Vector<String>(); //
-				String sku_code = rs.getString("sku_code");
-				String sku_name = rs.getString("sku_name");
-				String sku_kind = rs.getString("sku_kind");
-				String total_num = rs.getString("total");
-				in.add(sku_code);
-				in.add(sku_name);
-				in.add(sku_kind);
-				in.add(total_num);
-				data.add(in);
+			if (text.equals("상품정보조회")) {
+				rs = l.stmt.executeQuery("select * from productlist p left join (select sku_code, SUM(sku_finalnum) as "
+						+ "total from listdb group by sku_code) s on p.sku_code = s.sku_code where sku_name like '%"
+						+ search + "%'");
+				while (rs.next()) {
+					Vector in = new Vector<String>(); //
+					String sku_code = rs.getString("sku_code");
+					String sku_name = rs.getString("sku_name");
+					String sku_kind = rs.getString("sku_kind");
+					String total_num = rs.getString("total");
+					in.add(sku_code);
+					in.add(sku_name);
+					in.add(sku_kind);
+					in.add(total_num);
+					data.add(in);
+				}
+			} else { // if (text.equals("ID정보관리"))
+				String select = titleCombo.getSelectedItem().toString();
+				if (select.equals("아이디"))
+					rs = l.stmt.executeQuery("select * from workerid  where id like '%" + search + "%'");
+				else
+					rs = l.stmt.executeQuery("select * from workerid  where worker_name like '%" + search + "%'");
+				while (rs.next()) {
+					Vector in = new Vector<Object>(); //
+					String id = rs.getString("id");
+					String pw = rs.getString("pw");
+					String name = rs.getString("worker_name");
+					String age = rs.getString("worker_age");
+					boolean powin = rs.getBoolean("pow_inorder");
+					boolean powout = rs.getBoolean("pow_outorder");
+					in.add(id);
+					in.add(pw);
+					in.add(name);
+					in.add(age);
+					in.add(powin);
+					in.add(powout);
+					data.add(in);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -470,4 +578,17 @@ public class SubBtnListener3 extends JFrame {
 		return data;
 	}
 
+/////////////////////////////////테이블체크박스
+	public void tableCheckBox() {
+
+		table.getColumn("발주서생성권한").setCellRenderer(dcr);
+		JCheckBox box1 = new JCheckBox();
+		box1.setHorizontalAlignment(JLabel.CENTER);
+		table.getColumn("발주서생성권한").setCellEditor(new DefaultCellEditor(box1));
+
+		table.getColumn("출고오더생성권한").setCellRenderer(dcr);
+		JCheckBox box2 = new JCheckBox();
+		box2.setHorizontalAlignment(JLabel.CENTER);
+		table.getColumn("출고오더생성권한").setCellEditor(new DefaultCellEditor(box2));
+	}
 }

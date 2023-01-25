@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Vector;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -101,9 +102,18 @@ public class testststst extends JFrame {
 		LocalDateTime now = LocalDateTime.now();
 		String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분"));
 //	        System.out.println(formatedNow);  // 2021년 06월 17일 06시 43분 21초
+		Vector in = null;
+		String [] s ={"1","","2","3"};
+		in = new Vector<String>();
+		in.add(s);
+		for(int i = 0 ; i< 4 ; i++) {
+			if(in.get(i) == "" ) {
+				System.out.print(i +"에 빈값이 존재합니다");
+			}
+			
+		}
 		
-		
-		System.out.println(formatedNow);
+		System.out.println();
 		
 	}
 

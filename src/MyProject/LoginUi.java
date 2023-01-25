@@ -118,7 +118,7 @@ public class LoginUi extends JFrame {
 		setContentPane(panel);
 
 		setLayout(null);
-		panel.setBackground(Color.white);
+//		panel.setBackground(Color.white);
 //		panel.setBackground(new Color(80,188,223));
 		setSize(1500, 900);
 		setVisible(true);
