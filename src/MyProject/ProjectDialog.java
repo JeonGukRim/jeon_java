@@ -14,7 +14,6 @@ import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -37,6 +36,7 @@ public class ProjectDialog extends JDialog {
 	public LoginUi frame;
 	private LoginUi l;
 	public boolean flg = false;
+	private ResultSet rs = null;
 
 	public ProjectDialog() {
 	}
@@ -147,13 +147,7 @@ public class ProjectDialog extends JDialog {
 					if (i == 0) {
 						new SubBtnListener(subMenuContainer, "재고현황조회", loginid, frame);
 						getContentPane().add(subMenuContainer);
-
-					}
-//					else if (i == 1) {
-//						new SubBtnListener(subMenuContainer, "검색",loginid,frame );
-//						getContentPane().add(subMenuContainer);
-//					} 
-					else if (i == 1) {
+					} else if (i == 1) {
 						new SubBtnListener(subMenuContainer, "입출고 이력조회", loginid, frame);
 						getContentPane().add(subMenuContainer);
 					} else if (i == 2) {
@@ -273,9 +267,37 @@ public class ProjectDialog extends JDialog {
 			for (int i = 2; i < 5; i++) {
 				pNorth.remove(menuBtn[i]);
 			}
-			for (int i = 2; i < 5; i++) {
-				pNorth.add(subBtn[i]);
+
+			// 관리자 모드 선택되면 모드 서브메뉴 추가
+			try {
+				if (frame.ck.isSelected()) {
+					for (int i = 2; i < 5; i++) {
+						pNorth.add(subBtn[i]);
+					}
+				}
+				// 관리자 모드 아닐시 권한 받은 메뉴만 추가
+				else {
+					rs = frame.stmt.executeQuery("select * from workerid where id = '" + loginid + "'");
+					boolean powin = true;
+					while (rs.next()) {
+						powin = rs.getBoolean("pow_inorder");
+					}
+					if (powin) {
+						for (int i = 2; i < 5; i++) {
+							pNorth.add(subBtn[i]);
+						}
+					} else {
+						for (int i = 3; i < 5; i++) {
+							pNorth.add(subBtn[i]);
+						}
+					}
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
 			for (int i = 2; i < 5; i++) {
 				pNorth.add(menuBtn[i]);
 			}
@@ -296,9 +318,33 @@ public class ProjectDialog extends JDialog {
 			for (int i = 3; i < 5; i++) {
 				pNorth.remove(menuBtn[i]);
 			}
-			for (int i = 5; i < 7; i++) {
-				pNorth.add(subBtn[i]);
+			try {
+				if (frame.ck.isSelected()) {
+					for (int i = 5; i < 7; i++) {
+						pNorth.add(subBtn[i]);
+					}
+				}
+				// 관리자 모드 아닐시 권한 받은 메뉴만 추가
+				else {
+					rs = frame.stmt.executeQuery("select * from workerid where id = '" + loginid + "'");
+					boolean powin = true;
+					while (rs.next()) {
+						powin = rs.getBoolean("pow_inorder");
+					}
+					if (powin) {
+						pNorth.add(subBtn[6]);
+					} else {
+						for (int i = 5; i < 7; i++) {
+							pNorth.add(subBtn[i]);
+						}
+					}
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
 			for (int i = 3; i < 5; i++) {
 				pNorth.add(menuBtn[i]);
 			}

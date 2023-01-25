@@ -42,11 +42,11 @@ public class LoginUi extends JFrame {
 	public Connection conn;
 	public Statement stmt = null;
 	private ResultSet rs = null;
+
 	public LoginUi() {
 		// 관리자 모드 여부 체크박스
-		ck = new JCheckBox("",image3);
+		ck = new JCheckBox("", image3);
 		ck.setSelectedIcon(image2);
-//		ck = new JCheckBox("관리자 모드");
 		ck.setSize(300, 80);
 		ck.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		ck.setLocation(800, 380);
@@ -55,9 +55,8 @@ public class LoginUi extends JFrame {
 		// 로그인 정보
 		idjl.setLocation(740, 390);
 		idjl.setSize(200, 200);
-//		idjl.setFont(new Font("Arial", Font.ITALIC, 30));
 		loginTf.setSize(400, 40);
-		loginTf.setFont(new Font("맑음 고딕",Font.BOLD,20));
+		loginTf.setFont(new Font("맑음 고딕", Font.BOLD, 20));
 		loginTf.setBackground(Color.LIGHT_GRAY);
 		loginTf.setLocation(880, 471);
 
@@ -65,9 +64,8 @@ public class LoginUi extends JFrame {
 
 		pwjl.setLocation(740, 460);
 		pwjl.setSize(200, 200);
-//		pwjl.setFont(new Font("Arial", Font.ITALIC, 30));
 		pwTf.setSize(400, 40);
-		pwTf.setFont(new Font("맑음 고딕",Font.BOLD,20));
+		pwTf.setFont(new Font("맑음 고딕", Font.BOLD, 20));
 		pwTf.setBackground(Color.LIGHT_GRAY);
 		pwTf.setLocation(880, 540);
 
@@ -75,27 +73,32 @@ public class LoginUi extends JFrame {
 
 		login.setSize(200, 30);
 		login.setLocation(840, 620);
-		
+
 		dbclass();
 		login.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
+					boolean tof = true;
 					if (ck.isSelected()) {
-						rs = stmt.executeQuery("select * from masterid");
+						rs = stmt.executeQuery("select * from masterid where id = '"+loginTf.getText() +"'");
 					} else {
-						rs = stmt.executeQuery("select * from workerid");
+						rs = stmt.executeQuery("select * from workerid where id = '"+loginTf.getText() +"'");
 					}
 					dialog = new ProjectDialog(LoginUi.this, "로그인 성공", loginTf.getText());
 					while (rs.next()) {
 						if (loginTf.getText().equals(rs.getString("id")) && pwTf.getText().equals(rs.getString("pw"))) {
-							setVisible(false);
-							dialog.setVisible(true);
+							tof = true;
 						} else {
-							JOptionPane.showMessageDialog(null, "아이디 비밀번호가 일치하지 않습니다", "로그인실패",
-									JOptionPane.ERROR_MESSAGE);
+							tof = false;
 						}
+					}
+					if (tof) {
+						setVisible(false);
+						dialog.setVisible(true);
+					} else {
+						JOptionPane.showMessageDialog(null, "아이디 비밀번호가 일치하지 않습니다", "로그인실패", JOptionPane.ERROR_MESSAGE);
 					}
 
 				} catch (SQLException e1) {
@@ -118,8 +121,6 @@ public class LoginUi extends JFrame {
 		setContentPane(panel);
 
 		setLayout(null);
-//		panel.setBackground(Color.white);
-//		panel.setBackground(new Color(80,188,223));
 		setSize(1500, 900);
 		setVisible(true);
 
@@ -128,9 +129,6 @@ public class LoginUi extends JFrame {
 	class MyPanel extends JPanel {
 		private ImageIcon icon = new ImageIcon("images/warehouse.png");
 		private Image img = icon.getImage();
-
-//		MyPanel() {
-//		}
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);

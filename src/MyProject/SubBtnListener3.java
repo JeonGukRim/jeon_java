@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.DefaultCellEditor;
@@ -80,7 +81,7 @@ public class SubBtnListener3 extends JFrame {
 	private DefaultTableModel model1 = null;
 	private String[] t = { "아이디", "이름" };
 	private JComboBox titleCombo = new JComboBox<String>(t);
-	private int row = -1;
+	private int row = -1; // 행미선택시 디폴트 값이 -1임;
 
 	public SubBtnListener3(JPanel mainP, String text, String loginid, JFrame frame) {
 		this.mainP = mainP;
@@ -88,6 +89,8 @@ public class SubBtnListener3 extends JFrame {
 		this.loginid = loginid;
 		l = (LoginUi) frame;
 		mainP.setLayout(new BorderLayout());
+	
+/////////////////////////////////상품정보조회//////////////////////////////////////		
 		if (text.equals("상품정보조회")) {
 			resetP();
 			locationSetting1();
@@ -173,6 +176,7 @@ public class SubBtnListener3 extends JFrame {
 				}
 			});
 		}
+///////////////////////////////ID정보조회//////////////////////////////////////
 		if (text.equals("ID정보관리")) {
 			resetP();
 			locationSetting2();
@@ -227,12 +231,21 @@ public class SubBtnListener3 extends JFrame {
 						result = getData();
 						model1.setDataVector(result, title);
 						tableCheckBox();
-//						if (popup) {
-//							JOptionPane.showMessageDialog(null, "추가 되였습니다", "알림", JOptionPane.DEFAULT_OPTION);
-//						}
 					}
 				}
 			});
+////////////////////////////////삭제 버튼			
+			delBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					delete("");
+					result = getData();
+					model1.setDataVector(result, title);
+					tableCheckBox();
+				}
+			});
+			
 		}
 
 	}
@@ -351,7 +364,7 @@ public class SubBtnListener3 extends JFrame {
 			return box;
 		}
 	};
-
+////////////////////////////전체 패널 리셋
 	public void resetP() {
 		mainP.removeAll();
 		northP.removeAll();
@@ -404,23 +417,38 @@ public class SubBtnListener3 extends JFrame {
 
 ////////////////////////////////삭제 메소드
 	public void delete(String code) {
-		try {
-			rs = l.stmt.executeQuery("select * from listdb where sku_code ='" + code + "'");
-			if (rs != null && rs.isBeforeFirst()) {
-				JOptionPane.showMessageDialog(null, "현재 사용중인 코드입니다", "에러", JOptionPane.ERROR_MESSAGE);
-			} else {
-				pstmtDelete = l.conn.prepareStatement("delete from productlist where sku_code = ?");
-				pstmtDelete.setString(1, code);
-				pstmtDelete.executeUpdate();
-				rs = l.stmt.executeQuery("select * from productlist where sku_code ='" + code + "'");
+		if (text.equals("상품정보조회")) {
+			try {
+				rs = l.stmt.executeQuery("select * from listdb where sku_code ='" + code + "'");
 				if (rs != null && rs.isBeforeFirst()) {
-					return;
+					JOptionPane.showMessageDialog(null, "현재 사용중인 코드입니다", "에러", JOptionPane.ERROR_MESSAGE);
 				} else {
-					JOptionPane.showMessageDialog(null, "삭제되였습니다", "알림", JOptionPane.DEFAULT_OPTION);
+					pstmtDelete = l.conn.prepareStatement("delete from productlist where sku_code = ?");
+					pstmtDelete.setString(1, code);
+					pstmtDelete.executeUpdate();
+					rs = l.stmt.executeQuery("select * from productlist where sku_code ='" + code + "'");
+					if (rs != null && rs.isBeforeFirst()) {
+						return;
+					} else {
+						JOptionPane.showMessageDialog(null, "삭제되였습니다", "알림", JOptionPane.DEFAULT_OPTION);
+					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			if (row >= 0) { //
+				Vector in = (Vector) data.get(row);
+				try {
+					pstmtDelete = l.conn.prepareStatement("delete from workerid where id = ?");
+					pstmtDelete.setString(1, (String) in.get(0));
+					pstmtDelete.executeUpdate();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
 		}
 
 	}
@@ -462,8 +490,8 @@ public class SubBtnListener3 extends JFrame {
 					}
 					if (exp) {
 						pstmtUpdate.executeUpdate();
-					}else {
-						JOptionPane.showMessageDialog(null,"빈칸을 채줘주세요","알림",1);
+					} else {
+						JOptionPane.showMessageDialog(null, "빈칸을 채줘주세요", "알림", 1);
 					}
 				}
 //				popup1 = true;
