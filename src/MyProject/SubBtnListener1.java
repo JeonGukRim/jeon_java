@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -86,7 +88,7 @@ public class SubBtnListener1 extends JFrame {
 	private JTable table = null;
 	private DefaultTableModel model = null;
 	private Vector result;
-
+	private int row = 0;
 	private String loginid;
 	private LoginUi l;
 
@@ -103,7 +105,7 @@ public class SubBtnListener1 extends JFrame {
 		formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 //////////////////////////////////////발주서생성////////////////////////////////////////////
 		if (text.equals("발주서 생성")) {
-			mainP.removeAll();
+			resetP();
 			locationSetting();
 			codeTf.addActionListener(new ActionListener() {
 				@Override
@@ -145,38 +147,39 @@ public class SubBtnListener1 extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					int innum = 0;
-					try {
-						innum = Integer.parseInt((inTf.getText().trim()));
-					} catch (Exception e1) {
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, "숫자만 입력해주세요", "알림", 1);
-					}
-					try {
-						if (exp == false) {
-							if (inTf.getText().trim().length() != 0 && innum >= 0) {
-								creat(codeTf.getText(), skuNamedata.getText(), kinddata.getText(),
-										Integer.parseInt(inTf.getText()), ordernum.getText());
-								skuNamedata.setText("");
-								kinddata.setText("");
-								inTf.setText("");
-								exp = true;
-								codeTf.setText("");
-								codeTf.setEditable(exp);
+					if ((inTf.getText().trim().length() != 0 && exp == false)) {
+						try {
+							innum = Integer.parseInt((inTf.getText().trim()));
+							try {
+								if (innum > 0) {
+									creat(codeTf.getText(), skuNamedata.getText(), kinddata.getText(),
+											Integer.parseInt(inTf.getText()), ordernum.getText());
+									skuNamedata.setText("");
+									kinddata.setText("");
+									inTf.setText("");
+									exp = true;
+									codeTf.setText("");
+									codeTf.setEditable(exp);
 
-								// 발주내역 추가후 새로운 오더번호 받기
-								LocalDateTime now = LocalDateTime.now();
-								formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-								ordernum.setText("IO" + formatedNow);
-								JOptionPane.showMessageDialog(null, "발주신청이 생성되였습니다", "알림", 1);
-							} else {
-								JOptionPane.showMessageDialog(null, "입고예정수량을 확인해주세요", "알림", 1);
+									// 발주내역 추가후 새로운 오더번호 받기
+									LocalDateTime now = LocalDateTime.now();
+									formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+									ordernum.setText("IO" + formatedNow);
+									JOptionPane.showMessageDialog(null, "발주신청이 생성되였습니다", "알림", 1);
+								} else {
+									JOptionPane.showMessageDialog(null, "입고예정수량을 확인해주세요", "알림", 1);
+								}
+							} catch (Exception e1) {
+								e1.printStackTrace();
+								JOptionPane.showMessageDialog(null, "숫자를 입력해주세요", "알림", 1);
 							}
-						} else {
-							JOptionPane.showMessageDialog(null, "빈칸을 채워주세요", "알림", 1);
+
+						} catch (Exception e1) {
+							e1.printStackTrace();
+							JOptionPane.showMessageDialog(null, "숫자만 입력해주세요", "알림", 1);
 						}
-					} catch (Exception e1) {
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, "숫자를 입력해주세요", "알림", 1);
+					} else {
+						JOptionPane.showMessageDialog(null, "빈칸을 확인해주세요", "알림", 1);
 					}
 				}
 			});
@@ -225,8 +228,6 @@ public class SubBtnListener1 extends JFrame {
 
 								try {
 									// 입출고 이력에 실제 입고수량 날짜 작업자 id 저장
-//								if (Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())
-//										&& !skuLocationTf.getText().equals("")) 
 									if (realnum <= Integer.parseInt(indata.getText()) && realnum >= 0) {
 										pstmtUpdate = l.conn.prepareStatement(
 												"update  iohistory set realnum = ?,complete = ?,worker_id = ?,work_date = ? where ordernum =?");
@@ -248,8 +249,6 @@ public class SubBtnListener1 extends JFrame {
 
 								try {
 									// 리스트에 같은 제품과 재고위치에 재고가 존재한다면 재고 추가
-//								if (Integer.parseInt(realinNumTf.getText()) <= Integer.parseInt(indata.getText())
-//										&& !skuLocationTf.getText().equals("")) 
 									if (realnum <= Integer.parseInt(indata.getText()) && realnum >= 0) {
 										rs = l.stmt.executeQuery(
 												"select * from listdb  where sku_location = '" + skuLocationTf.getText()
@@ -307,23 +306,29 @@ public class SubBtnListener1 extends JFrame {
 		if (text.equals("Location정보")) {
 			resetP();
 			locationSetting2();
+			table.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					row = table.getSelectedRow();
+					Vector in = (Vector) data.get(row);
+					String sku_location = (String) in.get(0);
+					loTf.setText(sku_location);
+				}
+			});
 			seaBtn.addActionListener(new btnAction());
 			addBtn.addActionListener(new btnAction());
 			delBtn.addActionListener(new btnAction());
-
 		}
-
 	}
 
 /////////////////////////////////////이하 메소드 구역/////////////////////////////////////////////////
 	public void locationSetting() { // 발주서생성 세팅
-
 		// 현재 시간으로 오더번호 생성 입고는 IO,출고는 OP로 시작;
 		creatCombo();
 		ordernum = new JLabel("IO" + formatedNow);
 		headname.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		mainP.add(headname, BorderLayout.NORTH);
-		centerP.setLayout(new GridLayout(7, 2));
+		centerP.setLayout(new GridLayout(14, 2));
 		order.setFont(new Font("맑은 고딕", Font.BOLD, 25));
 		ordernum.setFont(new Font("맑은 고딕", Font.BOLD, 25));
 		centerP.add(order, ordernum);
@@ -353,7 +358,7 @@ public class SubBtnListener1 extends JFrame {
 		model.setDataVector(result, title);
 		table = new JTable(model);
 		JScrollPane sp = new JScrollPane(table);
-		sp.setPreferredSize(new Dimension(300, 300));
+//		sp.setPreferredSize(new Dimension(300, 300));
 		testP.add(addBtn1);
 		testP.add(sp);
 
@@ -471,6 +476,7 @@ public class SubBtnListener1 extends JFrame {
 		model = new DefaultTableModel();
 		result = getData();
 		title.add("재고위치");
+		title.add("적재재고수량");
 		model.setDataVector(result, title);
 		table = new JTable(model);
 		JScrollPane sp = new JScrollPane(table);
@@ -511,11 +517,16 @@ public class SubBtnListener1 extends JFrame {
 	public Vector getData() { // 재고위치 정보 저장
 		data.clear();
 		try {
-			rs = l.stmt.executeQuery("select * from locationdb");
+//			rs = l.stmt.executeQuery("select * from locationdb");
+			rs = l.stmt.executeQuery(
+					"select * from locationdb l left join (select sku_location, SUM(sku_finalnum) as total from listdb group by sku_location) "
+							+ "s on l.sku_location = s.sku_location");
 			while (rs.next()) {
 				Vector in = new Vector<String>();
 				String sku_location = rs.getString("sku_location");
+				int total = rs.getInt("total");
 				in.add(sku_location);
+				in.add(total);
 				data.add(in);
 			}
 
@@ -529,12 +540,18 @@ public class SubBtnListener1 extends JFrame {
 	public Vector searchData() { // 재고위치 정보 저장
 		data.clear();
 		try {
-			rs = l.stmt.executeQuery("select * from locationdb where sku_location = '" + loTf.getText() + "'");
+//			rs = l.stmt.executeQuery("select * from locationdb where sku_location like '%" + loTf.getText() + "%'");
+			rs = l.stmt.executeQuery(
+					"select * from locationdb l left join (select sku_location, SUM(sku_finalnum) as total from listdb group by sku_location) "
+							+ "s on l.sku_location = s.sku_location where l.sku_location like '%" + loTf.getText()
+							+ "%'");
 			if (rs.isBeforeFirst()) {
 				while (rs.next()) {
 					Vector in = new Vector<String>();
 					String sku_location = rs.getString("sku_location");
+					int total = rs.getInt("total");
 					in.add(sku_location);
+					in.add(total);
 					data.add(in);
 				}
 			} else {
@@ -548,28 +565,33 @@ public class SubBtnListener1 extends JFrame {
 	}
 
 	public void addData() {
-		try {
-			rs = l.stmt.executeQuery("select * from locationdb where sku_location = '" + loTf.getText() + "'");
-			if (rs.isBeforeFirst()) {
-				JOptionPane.showMessageDialog(null, "이미 존재하는 정보입니다", "알림", JOptionPane.ERROR_MESSAGE);
-			} else {
-				pstmtInsert = l.conn.prepareStatement("insert into locationdb values (?)");
-				pstmtInsert.setString(1, loTf.getText());
-				pstmtInsert.executeUpdate();
-				loTf.setText("");
-				JOptionPane.showMessageDialog(null, "새로운 재고위치가 추가 되였습니다", "알림", 1);
-				result = getData();
-				model.setDataVector(result, title);
-				result = null;
+		if (loTf.getText().trim().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "입력값을 확인 해주세요", "알림", 1);
+		} else {
+			try {
+				rs = l.stmt.executeQuery("select * from locationdb where sku_location = '" + loTf.getText() + "'");
+				if (rs.isBeforeFirst()) {
+					JOptionPane.showMessageDialog(null, "이미 존재하는 정보입니다", "알림", JOptionPane.ERROR_MESSAGE);
+				} else {
+					pstmtInsert = l.conn.prepareStatement("insert into locationdb values (?)");
+					pstmtInsert.setString(1, loTf.getText());
+					pstmtInsert.executeUpdate();
+					loTf.setText("");
+					JOptionPane.showMessageDialog(null, "새로운 재고위치가 추가 되였습니다", "알림", 1);
+					result = getData();
+					model.setDataVector(result, title);
+					result = null;
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
 	public void delData() {
 		try {
+
 			rs = l.stmt.executeQuery("select * from listdb where sku_location = '" + loTf.getText() + "'");
 			if (rs.isBeforeFirst()) {
 				JOptionPane.showMessageDialog(null, "현재 사용중인 재고위치입니다", "알림", JOptionPane.ERROR_MESSAGE);
@@ -622,13 +644,9 @@ public class SubBtnListener1 extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if (seaBtn == e.getSource()) {
-//				if(loTf.getText().equals(null))) {
-//					return;
-//				}else {
 				result = searchData();
 				model.setDataVector(result, title);
 				result = null;
-//				}
 			} else if (addBtn == e.getSource()) {
 				addData();
 			} else if (delBtn == e.getSource()) {
@@ -678,26 +696,4 @@ public class SubBtnListener1 extends JFrame {
 		}
 	}
 
-//	public class NumberField extends JTextField implements KeyListener {
-//		 private static final long serialVersionUID = 1;
-//		 
-//		 public NumberField() {
-//		  addKeyListener(this);
-//		 }
-//		 public void keyPressed(KeyEvent e) {
-//		 }
-//
-//		 public void keyReleased(KeyEvent e) {
-//		 }
-//
-//		 public void keyTyped(KeyEvent e) {
-//		  // Get the current character you typed...
-//		  char c = e.getKeyChar();
-//		  if (!Character.isDigit(c)) {
-//		   e.consume();
-//		   return;
-//		  }
-//		 }
-//		}
-//	
 }
