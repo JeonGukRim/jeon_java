@@ -40,9 +40,6 @@ public class SubBtnListener extends JFrame {
 	private JTextField searchTf1 = new JTextField(20);
 	private JTextField searchTf2 = new JTextField(20);
 	private JButton searchBtn = new JButton("검색");
-//	private JLabel skuJl = new JLabel("SKU코드 :");
-//	private JTextField skuCode = new JTextField(20);
-//	private JLabel memoupJl = new JLabel("메모 수정");
 	private JButton memoupBtn = new JButton("메모수정");
 	private JTextField memoupTf = new JTextField(20);
 	private JPanel upPanel = new JPanel();
@@ -67,6 +64,7 @@ public class SubBtnListener extends JFrame {
 		title = new Vector<>();
 		data = new Vector<>();
 		model = new DefaultTableModel();
+	
 		if (text.equals("재고현황조회")) {
 			resetP();
 			title.clear();
@@ -93,7 +91,6 @@ public class SubBtnListener extends JFrame {
 				}
 			});
 			memoupBtn.addActionListener(new ActionListener() {
-
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
@@ -148,7 +145,7 @@ public class SubBtnListener extends JFrame {
 					data.add(in);
 				}
 
-			} else if (text.equals("입출고 이력조회")) {
+			} else {
 				if (radio[0].isSelected())
 					rs = l.stmt.executeQuery("select * from iohistory order by sku_code");
 				else if (radio[1].isSelected())
@@ -189,29 +186,6 @@ public class SubBtnListener extends JFrame {
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
-	// 레디오 리스너
-	class radioListener implements ItemListener {
-
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-			// TODO Auto-generated method stub
-			if (e.getStateChange() == ItemEvent.DESELECTED) {
-				return;
-			}
-			if (radio[0].isSelected()) {
-				result = allData();
-				model.setDataVector(result, title);
-			} else if (radio[1].isSelected()) {
-				result = allData();
-				model.setDataVector(result, title);
-			} else {
-				result = allData();
-				model.setDataVector(result, title);
-			}
-		}
-
-	}
-
 	// 재고현황 세팅
 	public void locationSetting1() {
 		table.removeAll();
@@ -226,18 +200,6 @@ public class SubBtnListener extends JFrame {
 		northP.add(searchTf1);
 //		northP.add(searchBtn);
 		northP.add(memoupBtn);
-
-		// 조회된 내역에서 메모 내역 수정 버튼
-//		memoupBtn.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				String code = skuCode.getText();
-//				String memo = memoupTf.getText();
-//				update(code, memo);
-//				result = allData(); // 데이터 값 가져오기
-//				model.setDataVector(result, title);
-//			}
-//		});
 
 		result = allData();// 데이터 값 가져오기
 		model.setDataVector(result, title);
@@ -277,6 +239,7 @@ public class SubBtnListener extends JFrame {
 		}
 		result = allData();
 		model.setDataVector(result, title);
+		table = new JTable(model);
 		JScrollPane sp = new JScrollPane(table);
 		jp.add(sp, BorderLayout.CENTER);
 
@@ -310,6 +273,27 @@ public class SubBtnListener extends JFrame {
 			e.printStackTrace();
 		}
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
+	}
+
+	// 레디오 리스너
+	class radioListener implements ItemListener {
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			if (e.getStateChange() == ItemEvent.DESELECTED) {
+				return;
+			}
+			if (radio[0].isSelected()) {
+				result = allData();
+				model.setDataVector(result, title);
+			} else if (radio[1].isSelected()) {
+				result = allData();
+				model.setDataVector(result, title);
+			} else {
+				result = allData();
+				model.setDataVector(result, title);
+			}
+		}
 	}
 
 	public void resetP() {
