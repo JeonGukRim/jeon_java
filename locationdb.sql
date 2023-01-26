@@ -1,8 +1,8 @@
 /*
 -- Query: SELECT * FROM myproject.locationdb
-LIMIT 0, 1000
+LIMIT 0, 200
 
--- Date: 2023-01-18 18:18
+-- Date: 2023-01-26 09:37
 */
 INSERT INTO `` (`sku_location`) VALUES ('A-4-2');
 INSERT INTO `` (`sku_location`) VALUES ('A-4-3');

@@ -148,7 +148,7 @@ public class SubBtnListener extends JFrame {
 					data.add(in);
 				}
 
-			} else {
+			} else if (text.equals("입출고 이력조회")) {
 				if (radio[0].isSelected())
 					rs = l.stmt.executeQuery("select * from iohistory order by sku_code");
 				else if (radio[1].isSelected())

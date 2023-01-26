@@ -1,8 +1,8 @@
 /*
 -- Query: SELECT * FROM myproject.productlist
-LIMIT 0, 1000
+LIMIT 0, 200
 
--- Date: 2023-01-18 18:19
+-- Date: 2023-01-26 09:39
 */
 INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`) VALUES ('k123','SK II ','화장품');
 INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`) VALUES ('k124','선크림','화장품');
@@ -13,3 +13,6 @@ INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`) VALUES ('k128','휴지','생�
 INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`) VALUES ('k129','비타민','보충제');
 INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`) VALUES ('k130','향수','화장품');
 INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`) VALUES ('k131','립스틱','화장품');
+INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`) VALUES ('k132','선크림바','화장품');
+INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`) VALUES ('k134','구찌핸드백','패션');
+INSERT INTO `` (`sku_code`,`sku_name`,`sku_kind`) VALUES ('k135','가디건','패션');
