@@ -88,7 +88,7 @@ public class SubBtnListener1 extends JFrame {
 	private JTable table = null;
 	private DefaultTableModel model = null;
 	private Vector result;
-	private int row = 0;
+	private int row = -1;
 	private String loginid;
 	private LoginUi l;
 

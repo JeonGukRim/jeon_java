@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -53,6 +54,9 @@ public class SubBtnListener extends JFrame {
 	private JPanel southP = new JPanel();
 	private String[] t = { "SKU코드", "제품명" };
 	private JComboBox titleCombo = new JComboBox<String>(t);
+	private JCheckBox yetCk = new JCheckBox("작업미완료");
+	private JCheckBox overCk = new JCheckBox("작업완료");
+
 	private int row = -1; // 행미선택시 디폴트 값이 -1임;
 
 	public SubBtnListener(JPanel jp, String text, String loginid, JFrame frame) {
@@ -64,7 +68,7 @@ public class SubBtnListener extends JFrame {
 		title = new Vector<>();
 		data = new Vector<>();
 		model = new DefaultTableModel();
-	
+
 		if (text.equals("재고현황조회")) {
 			resetP();
 			title.clear();
@@ -146,12 +150,26 @@ public class SubBtnListener extends JFrame {
 				}
 
 			} else {
-				if (radio[0].isSelected())
+				if (radio[0].isSelected() && yetCk.isSelected() && overCk.isSelected())
 					rs = l.stmt.executeQuery("select * from iohistory order by sku_code");
-				else if (radio[1].isSelected())
+				else if ((radio[0].isSelected() && !yetCk.isSelected() && overCk.isSelected()))
+					rs = l.stmt.executeQuery("select * from iohistory where complete = 'over' ");
+				else if ((radio[0].isSelected() && yetCk.isSelected() && !overCk.isSelected()))
+					rs = l.stmt.executeQuery("select * from iohistory where complete = 'yet'");
+
+				else if (radio[1].isSelected() && yetCk.isSelected() && overCk.isSelected())
 					rs = l.stmt.executeQuery("select * from iohistory where oder_kind = '입고'");
-				else
+				else if (radio[1].isSelected() && !yetCk.isSelected() && overCk.isSelected())
+					rs = l.stmt.executeQuery("select * from iohistory where oder_kind = '입고' and complete = 'over'");
+				else if (radio[1].isSelected() && yetCk.isSelected() && !overCk.isSelected())
+					rs = l.stmt.executeQuery("select * from iohistory where oder_kind = '입고' and complete = 'yet'");
+
+				else if ((radio[2].isSelected() && yetCk.isSelected() && overCk.isSelected()))
 					rs = l.stmt.executeQuery("select * from iohistory where oder_kind = '출고'");
+				else if ((radio[2].isSelected() && !yetCk.isSelected() && overCk.isSelected()))
+					rs = l.stmt.executeQuery("select * from iohistory where oder_kind = '출고'and complete = 'over'");
+				else if ((radio[2].isSelected() && yetCk.isSelected() && !overCk.isSelected()))
+					rs = l.stmt.executeQuery("select * from iohistory where oder_kind = '출고' and complete = 'yet'");
 
 				while (rs.next()) {
 					Vector in = new Vector<String>(); //
@@ -230,6 +248,13 @@ public class SubBtnListener extends JFrame {
 			radio[i].addItemListener(new radioListener());
 		}
 		radio[0].setSelected(true);
+		yetCk.setSelected(true);
+		overCk.setSelected(true);
+		yetCk.addItemListener(new checkBoxListener());
+		overCk.addItemListener(new checkBoxListener());
+
+		upPanel.add(overCk);
+		upPanel.add(yetCk);
 		jp.add(upPanel, BorderLayout.NORTH);
 		title.clear();
 		table.removeAll();
@@ -283,6 +308,7 @@ public class SubBtnListener extends JFrame {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
 				return;
 			}
+
 			if (radio[0].isSelected()) {
 				result = allData();
 				model.setDataVector(result, title);
@@ -294,6 +320,28 @@ public class SubBtnListener extends JFrame {
 				model.setDataVector(result, title);
 			}
 		}
+	}
+
+	class checkBoxListener implements ItemListener {
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			if (yetCk.isSelected() && overCk.isSelected()) {
+				yetCk.setEnabled(true);
+				overCk.setEnabled(true);
+				result = allData();
+				model.setDataVector(result, title);
+			} else if (yetCk.isSelected() && !overCk.isSelected()) {
+				yetCk.setEnabled(false);
+				result = allData();
+				model.setDataVector(result, title);
+			} else {
+				overCk.setEnabled(false);
+				result = allData();
+				model.setDataVector(result, title);
+			}
+		}
+
 	}
 
 	public void resetP() {
