@@ -136,7 +136,7 @@ public class SubBtnListener2 extends JFrame {
 //					int outex = 0;
 					if (outnumTf.getText().trim().length() != 0 && exp == false) {
 						try {
-						int	outex = Integer.parseInt(outnumTf.getText());
+							int outex = Integer.parseInt(outnumTf.getText());
 							try {
 								rs = l.stmt.executeQuery("select * from listdb where sku_code ='" + codeTf.getText()
 										+ "' and sku_location = '" + locationdata.getText() + "'");
@@ -148,7 +148,7 @@ public class SubBtnListener2 extends JFrame {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							
+
 							if (outex > num) {
 								JOptionPane.showMessageDialog(null, "출고가능 수량을 초과하였습니다", "알림",
 										JOptionPane.ERROR_MESSAGE);
@@ -164,7 +164,7 @@ public class SubBtnListener2 extends JFrame {
 									LocalDateTime now = LocalDateTime.now();
 									formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 									ordernum.setText("IO" + formatedNow);
-									
+
 								} else
 									JOptionPane.showMessageDialog(null, "입력정보를 확인해주세요", "알림", 1);
 							}
@@ -184,6 +184,7 @@ public class SubBtnListener2 extends JFrame {
 		if (text.equals("출고")) {
 			resetP();
 			locationSetting2();
+			//출고 오더 조회
 			view.addActionListener(new ActionListener() {
 
 				@Override
@@ -210,21 +211,30 @@ public class SubBtnListener2 extends JFrame {
 				}
 			});
 			// 출고완료 저장
-			if (!skuCodeJl.getText().equals("")) {
-				outBtn.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						LocalDateTime now = LocalDateTime.now();
-						formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분"));
-						String select = orderCombo.getSelectedItem().toString();
-						int realnum = 0;
-						try {
-							realnum = Integer.parseInt(realoutNumTf.getText());
-							
+			outBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					LocalDateTime now = LocalDateTime.now();
+					formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분"));
+					String select = orderCombo.getSelectedItem().toString();
+					int realnum = 0;
+					try {
+						// try 입력값의 정확성 판단
+						realnum = Integer.parseInt(realoutNumTf.getText());
+						// 보유재고가 부족할때
+						rs = l.stmt.executeQuery("select sku_finalnum from listdb where sku_code ='"
+								+ skuCodeJl.getText() + "'and sku_location ='" + skuLocationData.getText() + "'");
+						int getnum = 0;
+						while (rs.next()) {
+							getnum = rs.getInt("sku_finalnum");
+						}
+						if (realnum > getnum) {
+							JOptionPane.showMessageDialog(null, "현재 해당 재고 보유 수량이 "+getnum+"개 입니다", "알림", 1);
+						} else {
 							try {
-								// 입출고 이력에 실제 출고수량 날짜 작업자 id 저장
 								if (realnum <= Integer.parseInt(finalNumdata.getText()) && realnum >= 0) {
+									// 입출고 이력에 작업자 id와 작업일자 저장
 									pstmtUpdate = l.conn.prepareStatement(
 											"update  iohistory set realnum = ?,complete = ?,worker_id = ?,work_date = ? where ordernum =?");
 									pstmtUpdate.setInt(1, realnum);
@@ -233,101 +243,53 @@ public class SubBtnListener2 extends JFrame {
 									pstmtUpdate.setString(4, formatedNow);
 									pstmtUpdate.setString(5, select);
 									pstmtUpdate.executeUpdate();
-								} else {
-									JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
-								}
-								
-								if (realnum <= Integer.parseInt(finalNumdata.getText()) && realnum >= 0) {
-									rs = l.stmt.executeQuery(
-											"select sku_finalnum from listdb where sku_code ='" + skuCodeJl.getText()
-													+ "'and sku_location ='" + skuLocationData.getText() + "'");
-									int getnum = 0;
-									while (rs.next()) {
-										getnum = rs.getInt("sku_finalnum");
-									}
+
+									//현재 재고 수량에서 출고수량 덜어내기
 									pstmtUpdate = l.conn.prepareStatement(
 											"update  listdb set sku_finalnum = ? where sku_code =? and sku_location = ?");
 									pstmtUpdate.setInt(1, (getnum - realnum));
-									pstmtUpdate.setString(2, "over"); // 작업끝났으면 오버로 표시
-									pstmtUpdate.setString(3, loginid);
-									pstmtUpdate.setString(4, formatedNow);
-									pstmtUpdate.setString(5, select);
+									pstmtUpdate.setString(2, skuCodeJl.getText());
+									pstmtUpdate.setString(3, skuLocationData.getText());
 									JOptionPane.showMessageDialog(null, "출고완료 되였습니다", "알림", 1);
 									pstmtUpdate.executeUpdate();
-									pstmtDelete = l.conn.prepareStatement(
-											"delete from listdb where sku_code =? and sku_location = ? and sku_finalnum = '0'");
-									pstmtUpdate.setString(1, skuCodeJl.getText());
-									pstmtUpdate.setString(2,skuLocationData.getText());
+
+									//재고가 0인 데이터 삭제처리
+									pstmtDelete = l.conn
+											.prepareStatement("delete from listdb where sku_finalnum = '0'");
 									pstmtDelete.executeUpdate();
+
+									// 리셋
+									orderCombo.removeAll();
+									skuCodeJl.setText("");
+									skuNamedata.setText("");
+									kinddata.setText("");
+									outdata.setText("");
+									realoutNumTf.setText("");
+									skuLocationData.setText("");
+									finalNumdata.setText("");
+									resetP();
+									locationSetting2();
+								} else {
+									JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
 								}
-								orderCombo.removeAll();
-								skuCodeJl.setText("");
-								skuNamedata.setText("");
-								kinddata.setText("");
-								outdata.setText("");
-								realoutNumTf.setText("");
-								skuLocationData.setText("");
-								resetP();
-								locationSetting2();
+
 							} catch (SQLException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-						} catch (Exception e1) {
-							e1.printStackTrace();
-							JOptionPane.showMessageDialog(null, "숫자를 확인해주세요", "알림", 1);
 						}
-
-//						try {
-//							// 재고수량에서 출고수량만큼 덜어줌 수량이 0 이면 재고현황에서 삭제
-//							if (realnum <= Integer.parseInt(finalNumdata.getText()) && realnum >= 0) {
-//								rs = l.stmt.executeQuery(
-//										"select sku_finalnum from listdb where sku_code ='" + skuCodeJl.getText()
-//												+ "'and sku_location ='" + skuLocationData.getText() + "'");
-//								int getnum = 0;
-//								while (rs.next()) {
-//									getnum = rs.getInt("sku_finalnum");
-//								}
-//								pstmtUpdate = l.conn.prepareStatement(
-//										"update  listdb set sku_finalnum = ? where sku_code =? and sku_location = ?");
-//								pstmtUpdate.setInt(1, (getnum - realnum));
-//								pstmtUpdate.setString(2, "over"); // 작업끝났으면 오버로 표시
-//								pstmtUpdate.setString(3, loginid);
-//								pstmtUpdate.setString(4, formatedNow);
-//								pstmtUpdate.setString(5, select);
-//								JOptionPane.showMessageDialog(null, "출고완료 되였습니다", "알림", 1);
-//								pstmtUpdate.executeUpdate();
-//								pstmtDelete = l.conn.prepareStatement(
-//										"delete from listdb where sku_code =? and sku_location = ? and sku_finalnum = '0'");
-//								pstmtUpdate.setString(1, skuCodeJl.getText());
-//								pstmtUpdate.setString(2,skuLocationData.getText());
-//								pstmtDelete.executeUpdate();
-//							}
-//							orderCombo.removeAll();
-//							skuCodeJl.setText("");
-//							skuNamedata.setText("");
-//							kinddata.setText("");
-//							outdata.setText("");
-//							realoutNumTf.setText("");
-//							skuLocationData.setText("");
-//							resetP();
-//							locationSetting2();
-//							
-//						} catch (SQLException e3) {
-//							// TODO Auto-generated catch block
-//							e3.printStackTrace();
-//						}
-
+					} catch (Exception e1) {
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "숫자를 확인해주세요", "알림", 1);
 					}
-
-				});
-
-			}
+				}
+			});
 		}
 	}
 
 ///////////////////////////////////메소드//////////////////////////////////////	
 
+	//출고오더생성
 	public void locationSetting1() {
 		ordernum = new JLabel("OP" + formatedNow);
 		headname.setFont(new Font("맑은 고딕", Font.BOLD, 30));
@@ -398,7 +360,7 @@ public class SubBtnListener2 extends JFrame {
 		});
 		result = null;
 	}
-
+	//출고
 	public void locationSetting2() {
 		creatComboBox();
 		northP.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 0));
@@ -426,7 +388,7 @@ public class SubBtnListener2 extends JFrame {
 		southP.add(outBtn);
 		mainP.add(southP, BorderLayout.SOUTH);
 	}
-
+	//패널 리셋
 	public void resetP() {
 		mainP.removeAll();
 		northP.removeAll();
